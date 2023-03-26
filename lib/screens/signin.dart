@@ -1,13 +1,14 @@
 import 'package:club_app_frontend/screens/signup.dart';
 import 'package:flutter/material.dart';
+import '../fb_helper.dart';
 import 'home.dart';
 import '../utils.dart';
 
 class SignIn extends StatelessWidget {
   SignIn({super.key});
 
-  final usernameController = TextEditingController();
-  final passwordController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +24,8 @@ class SignIn extends StatelessWidget {
               heading(),
               const SizedBox(height: 25),
               textField(
-                usernameController,
-                'Username',
+                emailController,
+                'Email',
                 false,
               ),
               const SizedBox(height: 10),
@@ -47,8 +48,7 @@ class SignIn extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 25),
-              signInButton(
-                  usernameController.text, passwordController.text, context),
+              signInButton(context),
               const SizedBox(height: 25),
               continueWithGoogle(),
               const SizedBox(height: 25),
@@ -85,6 +85,9 @@ class SignIn extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: TextField(
+        autocorrect: false,
+        enableSuggestions: false,
+        keyboardType: TextInputType.emailAddress,
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
@@ -104,27 +107,27 @@ class SignIn extends StatelessWidget {
 
   Widget squareTile(String imagePath) {
     return Container(
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade400),
-        borderRadius: BorderRadius.circular(16),
-        color: Colors.grey[200],
-      ),
-      child: Image.asset(
-        imagePath,
-        height: 40,
-      ),
-    );
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.shade400),
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.grey[200],
+        ),
+        child: GestureDetector(
+          onTap: () {
+            signInWithGoogle();
+          },
+          child: Image.asset(
+            imagePath,
+            height: 40,
+          ),
+        ));
   }
 
-  Widget signInButton(String email, String password, BuildContext context) {
+  Widget signInButton(BuildContext context) {
     return TextButton(
-      onPressed: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => Home(),
-          ),
-        );
+      onPressed: () async {
+        signIn(emailController.text, passwordController.text);
       },
       child: Container(
         padding: const EdgeInsets.all(15),

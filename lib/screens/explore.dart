@@ -1,3 +1,4 @@
+import 'package:club_app_frontend/fb_helper.dart';
 import 'package:flutter/material.dart';
 import '../components/ClubCardSquare.dart';
 import '../components/Header.dart';
@@ -10,7 +11,7 @@ class Explore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: nav,
+        appBar: nav,
         drawer: sidebar(context),
         body: SafeArea(
             child: Container(
@@ -28,27 +29,41 @@ class Explore extends StatelessWidget {
   }
 
   Widget allClubs(BuildContext context) {
-    List<Widget> clubWidgets = [];
+    return StreamBuilder<List<Map>>(
+      stream: getAllClubs(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<Map> clubsInfo = snapshot.data!;
+          List<Widget> clubWidgets = [];
 
-    for (int i = 0; i < 25; i++) {
-      clubWidgets.add(const ClubCardSquare(
-        clubName: "Club Name",
-        clubDay: "Monday",
-        clubAdvisor: "Ms. Qiu",
-        clubCategory: "STEM",
-        clubID: "16",
-      ));
-    }
-    var w = MediaQuery.of(context).size.width;
-    int crossAxisCount = (w / 500).ceil();
+          for (int i = 0; i < clubsInfo.length; i++) {
+            clubWidgets.add(ClubCardSquare(
+              clubName: clubsInfo[i]['name'],
+              clubDay: clubsInfo[i]['day'],
+              clubAdvisor: clubsInfo[i]['advisor'],
+              clubCategory: clubsInfo[i]['category'],
+              clubID: clubsInfo[i]['id'],
+            ));
+          }
 
-    // return (Column(children: clubWidgets));
-    return Expanded(
-        child: GridView.count(
-            crossAxisSpacing: 5,
-            mainAxisSpacing: 5,
-            crossAxisCount: crossAxisCount,
-            children: clubWidgets));
+          var w = MediaQuery.of(context).size.width;
+          int crossAxisCount = (w / 500).ceil();
+
+          return Expanded(
+            child: GridView.count(
+              crossAxisSpacing: 5,
+              mainAxisSpacing: 5,
+              crossAxisCount: crossAxisCount,
+              children: clubWidgets,
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Text('Error retrieving clubs: ${snapshot.error}');
+        } else {
+          return CircularProgressIndicator();
+        }
+      },
+    );
   }
 
   Widget allTabs() {
@@ -56,13 +71,14 @@ class Explore extends StatelessWidget {
 
     for (int i = 0; i < 10; i++) {
       tabs.add(Container(
-          padding: EdgeInsets.all(10),
           margin: EdgeInsets.only(right: 5),
           color: Colors.grey[300],
-          child: Text(
-            "Tab $i",
-            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-          )));
+          child: TextButton(
+              onPressed: () {},
+              child: Text(
+                "Tab $i",
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              ))));
     }
     return (SingleChildScrollView(
         scrollDirection: Axis.horizontal, child: Row(children: tabs)));

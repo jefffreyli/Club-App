@@ -2,6 +2,7 @@ import 'package:club_app_frontend/screens/explore.dart';
 import 'package:club_app_frontend/screens/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:club_app_frontend/utils.dart';
+import '../fb_helper.dart';
 import '../screens/home.dart';
 import '../screens/profile.dart';
 
@@ -88,6 +89,7 @@ Widget sidebar(BuildContext context) {
           title: const Text('Attendance'),
           leading: Icon(Icons.calendar_month),
           onTap: () {
+            getClubByCategory("Sports");
             Navigator.pop(context);
           },
         ),
@@ -105,11 +107,7 @@ Widget sidebar(BuildContext context) {
             color: Colors.red[300],
           ),
           onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => SignIn(),
-              ),
-            );
+            signOut();
           },
         ),
       ],
