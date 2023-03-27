@@ -1,3 +1,4 @@
+import 'package:club_app_frontend/fb_helper.dart';
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'signin.dart';
@@ -63,11 +64,12 @@ class _SignUpState extends State<SignUp> {
   Widget signUpButton(String email, String password, BuildContext context) {
     return TextButton(
       onPressed: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => Home(),
-          ),
-        );
+        createAccount(emailController.text, passwordController.text);
+        // Navigator.of(context).push(
+        //   MaterialPageRoute(
+        //     builder: (context) => Home(),
+        //   ),
+        // );
       },
       child: Container(
         padding: const EdgeInsets.all(15),

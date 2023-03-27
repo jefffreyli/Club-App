@@ -22,12 +22,12 @@ class Explore extends StatelessWidget {
                     SizedBox(height: 10),
                     allTabs(),
                     SizedBox(height: 10),
-                    allClubs(context),
+                    allClubs(context, t1.text),
                   ],
                 ))));
   }
 
-  Widget allClubs(BuildContext context) {
+  Widget allClubs(BuildContext context, String searched) {
     return StreamBuilder<List<Map>>(
       stream: getAllClubs(),
       builder: (context, snapshot) {
@@ -36,13 +36,24 @@ class Explore extends StatelessWidget {
           List<Widget> clubWidgets = [];
 
           for (int i = 0; i < clubsInfo.length; i++) {
-            clubWidgets.add(ClubCardSquare(
-              clubName: clubsInfo[i]['name'],
-              clubDay: clubsInfo[i]['day'],
-              clubAdvisor: clubsInfo[i]['advisor'],
-              clubCategory: clubsInfo[i]['category'],
-              clubID: clubsInfo[i]['id'],
-            ));
+            if (searched == '') {
+              clubWidgets.add(ClubCardSquare(
+                clubName: clubsInfo[i]['name'],
+                clubDay: clubsInfo[i]['day'],
+                clubAdvisor: clubsInfo[i]['advisor'],
+                clubCategory: clubsInfo[i]['category'],
+                clubID: clubsInfo[i]['id'],
+              ));
+              continue;
+            } if (searched == clubsInfo[i]['name']) {
+              clubWidgets.add(ClubCardSquare(
+                clubName: clubsInfo[i]['name'],
+                clubDay: clubsInfo[i]['day'],
+                clubAdvisor: clubsInfo[i]['advisor'],
+                clubCategory: clubsInfo[i]['category'],
+                clubID: clubsInfo[i]['id'],
+              ));
+            }
           }
 
           var w = MediaQuery.of(context).size.width;

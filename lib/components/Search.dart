@@ -7,6 +7,8 @@ class Search extends StatefulWidget {
   State<Search> createState() => _Search();
 }
 
+TextEditingController t1 = TextEditingController();
+
 class _Search extends State<Search> {
   String search = '';
   @override
@@ -14,6 +16,7 @@ class _Search extends State<Search> {
     return Column(
       children: [
         TextField(
+          controller: t1,
           decoration: InputDecoration(
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
