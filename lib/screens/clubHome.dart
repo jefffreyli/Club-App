@@ -32,8 +32,7 @@ class _ClubHomeState extends State<ClubHome> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         foregroundColor: Colors.grey[700],
-        elevation: 2,
-        toolbarHeight: 50,
+        elevation: 1,
         backgroundColor: Colors.grey[100],
         title: Text(
           "${widget.clubName}",

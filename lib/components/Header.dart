@@ -1,4 +1,5 @@
 import 'package:club_app_frontend/screens/explore.dart';
+import 'package:club_app_frontend/screens/settings.dart';
 import 'package:club_app_frontend/screens/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:club_app_frontend/utils.dart';
@@ -24,7 +25,9 @@ Widget sidebar(BuildContext context) {
                       Offset(0, -10), // move the CircleAvatar up by 25 pixels
                   child: CircleAvatar(
                     radius: 20,
-                    backgroundImage: AssetImage("assets/funnymonkeylips.png"),
+                    backgroundImage: NetworkImage(
+                      '${userData['image_url']}',
+                    ),
                   ),
                 ),
                 SizedBox(width: 25),
@@ -32,7 +35,8 @@ Widget sidebar(BuildContext context) {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Jeffrey Li',
+                      '${userData['full_name']}',
+                      // 'Jeffrey Li',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -40,7 +44,7 @@ Widget sidebar(BuildContext context) {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      'lij12@bxscience.edu',
+                      '${userData['email']}',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w300,
@@ -89,7 +93,6 @@ Widget sidebar(BuildContext context) {
           title: const Text('Attendance'),
           leading: Icon(Icons.calendar_month),
           onTap: () {
-            getClubByCategory("Sports");
             Navigator.pop(context);
           },
         ),
@@ -99,6 +102,28 @@ Widget sidebar(BuildContext context) {
             color: Colors.grey,
             thickness: 0.5,
           ),
+        ),
+        ListTile(
+          title: const Text('Settings'),
+          leading: Icon(Icons.settings),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => Settings(),
+              ),
+            );
+          },
+        ),
+        ListTile(
+          title: const Text('Help Center'),
+          leading: Icon(Icons.help),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => Settings(),
+              ),
+            );
+          },
         ),
         ListTile(
           title: const Text('Sign Out'),
@@ -117,8 +142,7 @@ Widget sidebar(BuildContext context) {
 
 AppBar nav = AppBar(
   foregroundColor: Colors.grey[700],
-  elevation: 2,
-  toolbarHeight: 50,
+  elevation: 1,
   backgroundColor: Colors.grey[100],
   title: Text("$appName",
       style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),

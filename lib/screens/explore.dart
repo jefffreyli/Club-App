@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../components/ClubCardSquare.dart';
 import '../components/Header.dart';
 import '../components/Search.dart';
-import 'dart:math' as math;
 
 class Explore extends StatelessWidget {
   const Explore({super.key});

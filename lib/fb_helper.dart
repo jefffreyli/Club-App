@@ -3,6 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 var db = FirebaseFirestore.instance;
+Map userData = {};
+
+void init() async {
+  userData = await getUserData();
+}
 
 Future<void> signIn(String emailAddress, String password) async {
   try {
@@ -81,4 +86,19 @@ Future<List<Map>> getClubByCategory(String category) async {
 Stream<List<Map>> getAllClubs() {
   return db.collection("clubs").snapshots().map(
       (querySnapshot) => querySnapshot.docs.map((doc) => doc.data()).toList());
+}
+
+Future<void> test() async {
+  if (FirebaseAuth.instance.currentUser != null) {
+    print(FirebaseAuth.instance.currentUser?.uid);
+  }
+}
+
+Future<Map> getUserData() async {
+  final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+  final querySnapshot = await db
+      .collection("users")
+      .where("email", isEqualTo: currentUserEmail)
+      .get();
+  return querySnapshot.docs.first.data();
 }

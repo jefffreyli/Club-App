@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../components/Header.dart';
 import '../utils.dart';
+import '/fb_helper.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -15,6 +16,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
+    init();
     return Scaffold(
         appBar: nav,
         drawer: sidebar(context),
