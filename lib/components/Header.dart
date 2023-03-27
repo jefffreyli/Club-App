@@ -140,11 +140,21 @@ Widget sidebar(BuildContext context) {
   );
 }
 
-AppBar nav = AppBar(
-  foregroundColor: Colors.grey[700],
-  elevation: 1,
-  backgroundColor: Colors.grey[100],
-  title: Text("$appName",
-      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-  centerTitle: true,
-);
+PreferredSizeWidget? nav(String title) {
+  return AppBar(
+    foregroundColor: Colors.grey[700],
+    elevation: 1,
+    backgroundColor: Colors.grey[100],
+    title: Text("$title",
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+    centerTitle: true,
+  );
+}
+// AppBar nav = AppBar(
+//   foregroundColor: Colors.grey[700],
+//   elevation: 1,
+//   backgroundColor: Colors.grey[100],
+//   title: Text("$appName",
+//       style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+//   centerTitle: true,
+// );

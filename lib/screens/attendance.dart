@@ -29,7 +29,7 @@ class _AttendanceState extends State<Attendance> {
     h = MediaQuery.of(context).size.height;
     return Scaffold(
       drawer: sidebar(context),
-      appBar: nav,
+      appBar: nav("Attendance"),
       body: Container(
           margin: EdgeInsets.only(left: 20, right: 20),
           child:

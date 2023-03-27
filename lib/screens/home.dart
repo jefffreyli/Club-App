@@ -18,7 +18,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     init();
     return Scaffold(
-        appBar: nav,
+        appBar: nav("Home"),
         drawer: sidebar(context),
         body: Container(
             margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),

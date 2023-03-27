@@ -65,6 +65,21 @@ class _ClubCardSquareState extends State<ClubCardSquare> {
                         tag(widget.clubID),
                       ],
                     ),
+                    const SizedBox(height: 5),
+                    TextButton(
+                      child: Text(
+                        "Join",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.green),
+                      ),
+                      onPressed: () {},
+                    ),
+
                     const SizedBox(height: 10)
                     // buildJoinLeave(widget.clubID.toString())
                   ]),

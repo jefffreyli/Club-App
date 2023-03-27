@@ -30,7 +30,7 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: nav,
+        appBar: nav("Settings"),
         drawer: sidebar(context),
         body: Container(
             margin: EdgeInsets.all(15),

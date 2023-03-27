@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 var db = FirebaseFirestore.instance;
-Map userData = {};
+Map<String, dynamic> userData = {};
 
 void init() async {
   userData = await getUserData();
@@ -94,7 +94,7 @@ Future<void> test() async {
   }
 }
 
-Future<Map> getUserData() async {
+Future<Map<String, dynamic>> getUserData() async {
   final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
   final querySnapshot = await db
       .collection("users")
@@ -102,3 +102,28 @@ Future<Map> getUserData() async {
       .get();
   return querySnapshot.docs.first.data();
 }
+
+Future<String> getDocumentIdByEmail(String email) async {
+  final QuerySnapshot snapshot =
+      await db.collection('users').where('email', isEqualTo: email).get();
+  final List<DocumentSnapshot> documents = snapshot.docs;
+  if (documents.isNotEmpty) {
+    return documents.first.id;
+  } else {
+    return "";
+  }
+}
+
+Future<void> editUserData(Map<String, dynamic> user) async {
+  final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+
+  final documentId = await getDocumentIdByEmail(currentUserEmail!);
+
+  await db
+      .collection("users")
+      .doc(documentId)
+      .update(user)
+      .then((value) => print("User Updated"))
+      .catchError((error) => print("Failed to update user: $error"));
+}
+

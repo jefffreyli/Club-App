@@ -10,7 +10,7 @@ class Explore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: nav,
+        appBar: nav("Explore"),
         drawer: sidebar(context),
         body: SafeArea(
             child: Container(
