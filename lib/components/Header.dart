@@ -10,6 +10,8 @@ import '../screens/profile.dart';
 Widget sidebar(BuildContext context) {
   var h = MediaQuery.of(context).size.height;
   return Drawer(
+      child: SingleChildScrollView(
+    scrollDirection: Axis.vertical,
     child: Column(
       children: [
         SizedBox(
@@ -137,7 +139,7 @@ Widget sidebar(BuildContext context) {
         ),
       ],
     ),
-  );
+  ));
 }
 
 PreferredSizeWidget? nav(String title) {
