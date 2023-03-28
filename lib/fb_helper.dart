@@ -114,6 +114,19 @@ Future<String> getDocumentIdByEmail(String email) async {
   }
 }
 
+Future<void> addUserData(Map<String, dynamic> user) async {
+  final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+
+  final documentId = await getDocumentIdByEmail(currentUserEmail!);
+
+  await db
+      .collection("users")
+      .doc(documentId)
+      .update(user)
+      .then((value) => print("User added"))
+      .catchError((error) => print("Failed to update user: $error"));
+}
+
 Future<void> editUserData(Map<String, dynamic> user) async {
   final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
 
