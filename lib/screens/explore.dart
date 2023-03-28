@@ -4,9 +4,15 @@ import '../components/ClubCardSquare.dart';
 import '../components/Header.dart';
 import '../components/Search.dart';
 
-class Explore extends StatelessWidget {
+class Explore extends StatefulWidget {
   const Explore({super.key});
 
+  @override
+  State<Explore> createState() => _Explore();
+}
+
+class _Explore extends State<Explore> {
+  String search = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,11 +24,11 @@ class Explore extends StatelessWidget {
                 child: Column(
                   children: [
                     SizedBox(height: 10),
-                    Search(),
+                    searchClub(),
                     SizedBox(height: 10),
                     allTabs(),
                     SizedBox(height: 10),
-                    allClubs(context, t1.text),
+                    allClubs(context, search),
                   ],
                 ))));
   }
@@ -36,7 +42,7 @@ class Explore extends StatelessWidget {
           List<Widget> clubWidgets = [];
 
           for (int i = 0; i < clubsInfo.length; i++) {
-            if (searched == '') {
+            if (searched.isEmpty) {
               clubWidgets.add(ClubCardSquare(
                 clubName: clubsInfo[i]['name'],
                 clubDay: clubsInfo[i]['day'],
@@ -45,7 +51,8 @@ class Explore extends StatelessWidget {
                 clubID: clubsInfo[i]['id'],
               ));
               continue;
-            } if (searched == clubsInfo[i]['name']) {
+            }
+            if (clubsInfo[i]['name'].toLowerCase().contains(searched)) {
               clubWidgets.add(ClubCardSquare(
                 clubName: clubsInfo[i]['name'],
                 clubDay: clubsInfo[i]['day'],
@@ -73,6 +80,27 @@ class Explore extends StatelessWidget {
           return CircularProgressIndicator();
         }
       },
+    );
+  }
+
+  Widget searchClub() {
+    return Column(
+      children: [
+        TextField(
+          decoration: InputDecoration(
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            labelText: 'Search a Club',
+            suffixIcon: Icon(Icons.search),
+          ),
+          onChanged: (text) {
+            setState(() => search = text.toLowerCase());
+          },
+        ),
+      ],
     );
   }
 
