@@ -1,5 +1,6 @@
 import 'package:club_app_frontend/fb_helper.dart';
 import 'package:flutter/material.dart';
+import '../clubModel.dart';
 import '../components/ClubCardSquare.dart';
 import '../components/Header.dart';
 import '../components/Search.dart';
@@ -44,22 +45,32 @@ class _Explore extends State<Explore> {
           for (int i = 0; i < clubsInfo.length; i++) {
             if (searched.isEmpty) {
               clubWidgets.add(ClubCardSquare(
-                clubName: clubsInfo[i]['name'],
-                clubDay: clubsInfo[i]['day'],
-                clubAdvisor: clubsInfo[i]['advisor'],
-                clubCategory: clubsInfo[i]['category'],
-                clubID: clubsInfo[i]['id'],
-              ));
+                  club: Club(
+                      name: clubsInfo[i]['name'],
+                      day: clubsInfo[i]['day'],
+                      advisorName: clubsInfo[i]['advisor_name'],
+                      advisorEmail: clubsInfo[i]['advisor_email'],
+                      category: clubsInfo[i]['category'],
+                      id: clubsInfo[i]['id'],
+                      description: clubsInfo[i]['description'],
+                      president: clubsInfo[i]['president'],
+                      vicePresident: clubsInfo[i]['vice_president'],
+                      secretary: clubsInfo[i]['secretary'])));
               continue;
             }
             if (clubsInfo[i]['name'].toLowerCase().contains(searched)) {
               clubWidgets.add(ClubCardSquare(
-                clubName: clubsInfo[i]['name'],
-                clubDay: clubsInfo[i]['day'],
-                clubAdvisor: clubsInfo[i]['advisor'],
-                clubCategory: clubsInfo[i]['category'],
-                clubID: clubsInfo[i]['id'],
-              ));
+                  club: Club(
+                      name: clubsInfo[i]['name'],
+                      day: clubsInfo[i]['day'],
+                      advisorName: clubsInfo[i]['advisor_name'],
+                      advisorEmail: clubsInfo[i]['advisor_email'],
+                      category: clubsInfo[i]['category'],
+                      id: clubsInfo[i]['id'],
+                      description: clubsInfo[i]['description'],
+                      president: clubsInfo[i]['president'],
+                      vicePresident: clubsInfo[i]['vice_president'],
+                      secretary: clubsInfo[i]['secretary'])));
             }
           }
 

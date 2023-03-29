@@ -2,21 +2,23 @@ import 'package:flutter/material.dart';
 import '../components/Header.dart';
 import '../components/Tag.dart';
 import 'attendance.dart';
-import 'attendance.dart';
+import '../clubModel.dart';
 
 class ClubHome extends StatefulWidget {
-  final String clubName;
-  final String clubDay;
-  final String clubAdvisor;
-  final String clubCategory;
-  final String clubID;
-  const ClubHome(
-      {super.key,
-      required this.clubName,
-      required this.clubDay,
-      required this.clubAdvisor,
-      required this.clubCategory,
-      required this.clubID});
+  // final String clubName;
+  // final String clubDay;
+  // final String clubAdvisor;
+  // final String clubCategory;
+  // final String clubID;
+  // const ClubHome(
+  //     {super.key,
+  //     required this.clubName,
+  //     required this.clubDay,
+  //     required this.clubAdvisor,
+  //     required this.clubCategory,
+  //     required this.clubID});
+  final Club club;
+  const ClubHome({super.key, required this.club});
 
   @override
   State<ClubHome> createState() => _ClubHomeState();
@@ -35,7 +37,7 @@ class _ClubHomeState extends State<ClubHome> {
         elevation: 1,
         backgroundColor: Colors.grey[100],
         title: Text(
-          "${widget.clubName}",
+          "${widget.club.name}",
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
@@ -49,10 +51,7 @@ class _ClubHomeState extends State<ClubHome> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => Attendance(
-                          clubName: "NoSQL Club",
-                          clubDay: "Tuesday",
-                          clubID: "1"),
+                      builder: (context) => Attendance(club: widget.club),
                     ),
                   );
                 },
@@ -79,38 +78,13 @@ class _ClubHomeState extends State<ClubHome> {
           radius: h * 0.12,
           backgroundImage: AssetImage("assets/logo.png"),
         )),
-        const SizedBox(height: 25),
-        // const Text("Club Home",
-        //     textAlign: TextAlign.center,
-        //     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-        // GestureDetector(
-        //     onTap: () {
-        //       Navigator.of(context).push(
-        //         MaterialPageRoute(
-        //           builder: (context) => Attendance(
-        //               clubName: "NoSQL Club", clubDay: "Tuesday", clubID: "1"),
-        //         ),
-        //       );
-        //     },
-        //     child: Container(
-        //         color: Colors.grey[200],
-        //         margin: EdgeInsets.only(left: 100, right: 100),
-        //         padding: EdgeInsets.all(6),
-        //         child: Row(
-        //             mainAxisAlignment: MainAxisAlignment.center,
-        //             children: [
-        //               Icon(Icons.calendar_month),
-        //               Text("View Attendance")
-        //             ]))
-        //             ),
-
-        const SizedBox(height: 25),
+        const SizedBox(height: 50),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            tag(widget.clubDay),
-            tag(widget.clubCategory),
-            tag(widget.clubID),
+            tag(widget.club.day),
+            tag(widget.club.category),
+            tag(widget.club.id),
           ],
         ),
         const SizedBox(height: 50),
@@ -132,7 +106,7 @@ class _ClubHomeState extends State<ClubHome> {
                     leading: ClipRRect(
                         borderRadius: BorderRadius.circular(50.0),
                         child: Image.asset("assets/logo.png")),
-                    title: Text(widget.clubAdvisor),
+                    title: Text(widget.club.advisorName),
                     subtitle: const Text("Advisor"),
                   )));
         })),

@@ -1,16 +1,20 @@
 import 'package:club_app_frontend/components/Header.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../clubModel.dart';
 
 class Attendance extends StatefulWidget {
-  final String clubName;
-  final String clubDay;
-  final String clubID;
-  const Attendance(
-      {super.key,
-      required this.clubName,
-      required this.clubDay,
-      required this.clubID});
+  // final String clubName;
+  // final String clubDay;
+  // final String clubID;
+  // const Attendance(
+  //     {super.key,
+  //     required this.clubName,
+  //     required this.clubDay,
+  //     required this.clubID});
+
+  final Club club;
+  const Attendance({super.key, required this.club});
 
   @override
   State<Attendance> createState() => _AttendanceState();

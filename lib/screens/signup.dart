@@ -15,6 +15,9 @@ class _SignUpState extends State<SignUp> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController osisController = TextEditingController();
+  TextEditingController yearController = TextEditingController();
+  TextEditingController classController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +37,14 @@ class _SignUpState extends State<SignUp> {
                           buildField(emailController, "Email"),
                           const SizedBox(height: 10),
                           buildField(passwordController, "Password"),
+                          const SizedBox(height: 10),
+                          buildField(osisController, "OSIS"),
+                          const SizedBox(height: 10),
+                          buildField(yearController, "Graduation Year"),
+                          const SizedBox(height: 10),
+                          buildField(classController, "Official Class"),
                           const SizedBox(height: 25),
-                          signUpButton(nameController.text,
-                              emailController.text, context),
+                          signUpButton(context),
                           const SizedBox(height: 25),
                           continueWithGoogle(),
                           const SizedBox(height: 25),
@@ -61,15 +69,18 @@ class _SignUpState extends State<SignUp> {
     ]));
   }
 
-  Widget signUpButton(String email, String password, BuildContext context) {
+  Widget signUpButton(BuildContext context) {
     return TextButton(
       onPressed: () {
         createAccount(emailController.text, passwordController.text);
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(
-        //     builder: (context) => Home(),
-        //   ),
-        // );
+        addUser(nameController.text, osisController.text, classController.text,
+            yearController.text, emailController.text, passwordController.text);
+            
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => SignIn(),
+          ),
+        );
       },
       child: Container(
         padding: const EdgeInsets.all(15),

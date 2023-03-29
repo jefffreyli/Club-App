@@ -29,7 +29,6 @@ Future<void> createAccount(String emailAddress, String password) async {
       email: emailAddress,
       password: password,
     );
-    print("Signed in!");
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
       print('The password provided is too weak.');
@@ -114,17 +113,30 @@ Future<String> getDocumentIdByEmail(String email) async {
   }
 }
 
-Future<void> addUserData(Map<String, dynamic> user) async {
-  final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
-
-  final documentId = await getDocumentIdByEmail(currentUserEmail!);
-
-  await db
-      .collection("users")
-      .doc(documentId)
-      .update(user)
-      .then((value) => print("User added"))
-      .catchError((error) => print("Failed to update user: $error"));
+Future<void> addUser(String full_name, String osis, String official_class,
+    String graduation_year, String email, String password) async {
+  try {
+    var docRef = await db.collection("users").add({
+      'full_name': full_name,
+      'osis': osis,
+      'official_class': official_class,
+      'graduation_year': graduation_year,
+      'email': email,
+      'password': password,
+      'clubs': [],
+      'user_type': "Member",
+      'about_me': "Hi! I'm $full_name.",
+      'appearance': "dark",
+      'email_notifications': "true",
+      'image_url':
+          "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg",
+      'mobile_notifications': "true",
+    });
+    print("User added.");
+    // await getUserData();
+  } catch (error) {
+    print("Failed to add user: $error");
+  }
 }
 
 Future<void> editUserData(Map<String, dynamic> user) async {
@@ -139,4 +151,3 @@ Future<void> editUserData(Map<String, dynamic> user) async {
       .then((value) => print("User Updated"))
       .catchError((error) => print("Failed to update user: $error"));
 }
-

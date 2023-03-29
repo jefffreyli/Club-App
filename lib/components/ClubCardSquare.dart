@@ -1,20 +1,12 @@
+import '../clubModel.dart';
 import 'package:flutter/material.dart';
 import '../screens/clubHome.dart';
 import 'Tag.dart';
 
 class ClubCardSquare extends StatefulWidget {
-  final String clubName;
-  final String clubDay;
-  final String clubAdvisor;
-  final String clubCategory;
-  final String clubID;
-  const ClubCardSquare(
-      {super.key,
-      required this.clubName,
-      required this.clubDay,
-      required this.clubAdvisor,
-      required this.clubCategory,
-      required this.clubID});
+  final Club club;
+
+  const ClubCardSquare({super.key, required this.club});
 
   @override
   State<ClubCardSquare> createState() => _ClubCardSquareState();
@@ -29,11 +21,12 @@ class _ClubCardSquareState extends State<ClubCardSquare> {
               context,
               MaterialPageRoute(
                   builder: (context) => ClubHome(
-                        clubName: widget.clubName,
-                        clubDay: widget.clubDay,
-                        clubAdvisor: widget.clubAdvisor,
-                        clubCategory: widget.clubCategory,
-                        clubID: widget.clubID,
+                    club: widget.club
+                        // clubName: widget.club.name,
+                        // clubDay: widget.club.day,
+                        // clubAdvisor: widget.club.advisorName,
+                        // clubCategory: widget.club.category,
+                        // clubID: widget.id,
                       )));
         }),
         // height: sHeight * 0.6,
@@ -51,7 +44,7 @@ class _ClubCardSquareState extends State<ClubCardSquare> {
                         radius: 60,
                         backgroundImage: AssetImage("assets/logo.png")),
                     const SizedBox(height: 20),
-                    Text(widget.clubName,
+                    Text(widget.club.name,
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 20),
                     const Text(
@@ -60,9 +53,9 @@ class _ClubCardSquareState extends State<ClubCardSquare> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        tag(widget.clubDay),
-                        tag(widget.clubCategory),
-                        tag(widget.clubID),
+                        tag(widget.club.day),
+                        tag(widget.club.category),
+                        tag(widget.club.id),
                       ],
                     ),
                     const SizedBox(height: 5),

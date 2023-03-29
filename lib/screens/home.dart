@@ -2,6 +2,7 @@ import 'package:club_app_frontend/components/ClubCardHorizontal.dart';
 import 'package:club_app_frontend/components/SectionTab.dart';
 import 'package:flutter/material.dart';
 
+import '../clubModel.dart';
 import '../components/Header.dart';
 import '../utils.dart';
 import '/fb_helper.dart';
@@ -67,11 +68,12 @@ class _HomeState extends State<Home> {
 
     for (int i = 0; i < 10; i++) {
       clubWidgets.add(const ClubCardHorizontal(
-        clubName: "Club Name",
-        clubDay: "Monday",
-        clubAdvisor: "Ms. Qiu",
-        clubCategory: "STEM",
-        clubID: "16",
+        // clubName: "Club Name",
+        // clubDay: "Monday",
+        // clubAdvisor: "Ms. Qiu",
+        // clubCategory: "STEM",
+        // clubID: "16",
+        club: Club(name: "Club Name", day:"Monday", advisorName:"Ms. Qiu", advisorEmail:"qiuw@bxscience.edu", category:"STEM", id:"16", description:"awdl waij lajdlaj dklwj alkjd wlkaj lkj.", president:"President", vicePresident:"Vice President", secretary:"Seceretary")
       ));
     }
     return (Column(children: clubWidgets));

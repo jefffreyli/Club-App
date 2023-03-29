@@ -114,9 +114,7 @@ class SignIn extends StatelessWidget {
           color: Colors.grey[200],
         ),
         child: GestureDetector(
-          onTap: () {
-            signInWithGoogle();
-          },
+          onTap: () {},
           child: Image.asset(
             imagePath,
             height: 40,

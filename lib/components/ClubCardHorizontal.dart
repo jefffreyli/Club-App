@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import '../screens/clubHome.dart';
+import '../clubModel.dart';
 
 class ClubCardHorizontal extends StatefulWidget {
-  final String clubName;
-  final String clubDay;
-  final String clubAdvisor;
-  final String clubCategory;
-  final String clubID;
-  const ClubCardHorizontal(
-      {super.key,
-      required this.clubName,
-      required this.clubDay,
-      required this.clubAdvisor,
-      required this.clubCategory,
-      required this.clubID});
+  // final String clubName;
+  // final String clubDay;
+  // final String clubAdvisor;
+  // final String clubCategory;
+  // final String clubID;
+  // const ClubCardHorizontal(
+  //     {super.key,
+  //     required this.clubName,
+  //     required this.clubDay,
+  //     required this.clubAdvisor,
+  //     required this.clubCategory,
+  //     required this.clubID});
+
+  final Club club;
+  const ClubCardHorizontal({super.key, required this.club});
 
   @override
   State<ClubCardHorizontal> createState() => _ClubCardHorizontalState();
@@ -27,13 +31,7 @@ class _ClubCardHorizontalState extends State<ClubCardHorizontal> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ClubHome(
-                        clubName: widget.clubName,
-                        clubDay: widget.clubDay,
-                        clubAdvisor: widget.clubAdvisor,
-                        clubCategory: widget.clubCategory,
-                        clubID: widget.clubID,
-                      )));
+                  builder: (context) => ClubHome(club: widget.club)));
         }),
         child: Container(
             margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
@@ -44,7 +42,7 @@ class _ClubCardHorizontalState extends State<ClubCardHorizontal> {
                   leading: ClipRRect(
                       borderRadius: BorderRadius.circular(50.0),
                       child: Image.asset("assets/logo.png")),
-                  title: Text(widget.clubAdvisor),
+                  title: Text(widget.club.advisorName),
                   subtitle: const Text("Advisor"),
                 ))));
   }
