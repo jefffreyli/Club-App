@@ -67,7 +67,7 @@ class _HomeState extends State<Home> {
     List<Widget> clubWidgets = [];
 
     for (int i = 0; i < 10; i++) {
-      clubWidgets.add(const ClubCardHorizontal(
+      clubWidgets.add( ClubCardHorizontal(
         // clubName: "Club Name",
         // clubDay: "Monday",
         // clubAdvisor: "Ms. Qiu",

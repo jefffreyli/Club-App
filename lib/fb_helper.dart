@@ -86,7 +86,7 @@ Future<List<Map>> getClubByCategory(String category) async {
   return clubs;
 }
 
-Stream<List<Map<String, dynamic>>> getMyClubs() {
+Stream<List<Map>> getMyClubs() {
   return db
       .collection("users")
       .doc(userDocId)

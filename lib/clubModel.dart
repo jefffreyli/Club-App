@@ -1,16 +1,16 @@
 class Club {
-  final String name;
-  final String day;
-  final String advisorName;
-  final String advisorEmail;
-  final String category;
-  final String id;
-  final String description;
-  final String president;
-  final String vicePresident;
-  final String secretary;
+   late String name;
+   late String day;
+   late String advisorName;
+   late String advisorEmail;
+   late String category;
+   late String id;
+   late String description;
+   late String president;
+   late String vicePresident;
+   late String secretary;
 
-  const Club(
+   Club(
       {required this.name,
       required this.day,
       required this.advisorName,
