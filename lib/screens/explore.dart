@@ -41,37 +41,38 @@ class _Explore extends State<Explore> {
         if (snapshot.hasData) {
           List<Map> clubsInfo = snapshot.data!;
           List<Widget> clubWidgets = [];
+          print(clubsInfo);
 
           for (int i = 0; i < clubsInfo.length; i++) {
-            if (searched.isEmpty) {
-              clubWidgets.add(ClubCardSquare(
-                  club: Club(
-                      name: clubsInfo[i]['name'],
-                      day: clubsInfo[i]['day'],
-                      advisorName: clubsInfo[i]['advisor_name'],
-                      advisorEmail: clubsInfo[i]['advisor_email'],
-                      category: clubsInfo[i]['category'],
-                      id: clubsInfo[i]['id'],
-                      description: clubsInfo[i]['description'],
-                      president: clubsInfo[i]['president'],
-                      vicePresident: clubsInfo[i]['vice_president'],
-                      secretary: clubsInfo[i]['secretary'])));
-              continue;
-            }
-            if (clubsInfo[i]['name'].toLowerCase().contains(searched)) {
-              clubWidgets.add(ClubCardSquare(
-                  club: Club(
-                      name: clubsInfo[i]['name'],
-                      day: clubsInfo[i]['day'],
-                      advisorName: clubsInfo[i]['advisor_name'],
-                      advisorEmail: clubsInfo[i]['advisor_email'],
-                      category: clubsInfo[i]['category'],
-                      id: clubsInfo[i]['id'],
-                      description: clubsInfo[i]['description'],
-                      president: clubsInfo[i]['president'],
-                      vicePresident: clubsInfo[i]['vice_president'],
-                      secretary: clubsInfo[i]['secretary'])));
-            }
+            // if (searched.isEmpty) {
+            //   clubWidgets.add(ClubCardSquare(
+            //       club: Club(
+            //           name: clubsInfo[i]['name'],
+            //           day: clubsInfo[i]['day'],
+            //           advisorName: clubsInfo[i]['advisor_name'],
+            //           advisorEmail: clubsInfo[i]['advisor_email'],
+            //           category: clubsInfo[i]['category'],
+            //           id: clubsInfo[i]['id'].toString(),
+            //           description: clubsInfo[i]['description'],
+            //           president: clubsInfo[i]['president'],
+            //           vicePresident: clubsInfo[i]['vice_president'],
+            //           secretary: clubsInfo[i]['secretary'])));
+            //   continue;
+            // }
+            // if (clubsInfo[i]['name'].toLowerCase().contains(searched)) {
+            clubWidgets.add(ClubCardSquare(
+                club: Club(
+                    name: clubsInfo[i]['name'],
+                    day: clubsInfo[i]['day'],
+                    advisorName: clubsInfo[i]['advisor_name'],
+                    advisorEmail: clubsInfo[i]['advisor_email'],
+                    category: clubsInfo[i]['category'],
+                    id: clubsInfo[i]['id'].toString(),
+                    description: clubsInfo[i]['description'],
+                    president: clubsInfo[i]['president'],
+                    vicePresident: clubsInfo[i]['vice_president'],
+                    secretary: clubsInfo[i]['secretary'])));
+            // }
           }
 
           var w = MediaQuery.of(context).size.width;

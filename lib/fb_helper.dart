@@ -3,10 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 var db = FirebaseFirestore.instance;
+final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
 Map<String, dynamic> userData = {};
+String userDocId = "";
 
 void init() async {
   userData = await getUserData();
+  userDocId = await getDocumentIdByEmail(currentUserEmail!);
+  getAllClubs();
 }
 
 Future<void> signIn(String emailAddress, String password) async {
@@ -82,15 +86,23 @@ Future<List<Map>> getClubByCategory(String category) async {
   return clubs;
 }
 
+Stream<List<Map<String, dynamic>>> getMyClubs() {
+  return db
+      .collection("users")
+      .doc(userDocId)
+      .snapshots()
+      .asyncMap((snapshot) async {
+    List<String> clubIds = List<String>.from(snapshot.get("clubs"));
+    QuerySnapshot querySnapshot =
+        await db.collection("clubs").where("id", whereIn: clubIds).get();
+    return querySnapshot.docs.map((doc) => doc.data()).toList()
+        as Future<List<Map<String, dynamic>>>;
+  });
+}
+
 Stream<List<Map>> getAllClubs() {
   return db.collection("clubs").snapshots().map(
       (querySnapshot) => querySnapshot.docs.map((doc) => doc.data()).toList());
-}
-
-Future<void> test() async {
-  if (FirebaseAuth.instance.currentUser != null) {
-    print(FirebaseAuth.instance.currentUser?.uid);
-  }
 }
 
 Future<Map<String, dynamic>> getUserData() async {
@@ -148,6 +160,19 @@ Future<void> editUserData(Map<String, dynamic> user) async {
       .collection("users")
       .doc(documentId)
       .update(user)
-      .then((value) => print("User Updated"))
+      .then((value) => print("User updated"))
       .catchError((error) => print("Failed to update user: $error"));
+}
+
+Future<void> addClub(String clubId) async {
+  final documentId = await getDocumentIdByEmail(currentUserEmail!);
+
+  await db
+      .collection("users")
+      .doc(documentId)
+      .update({
+        "clubs": FieldValue.arrayUnion([clubId])
+      })
+      .then((value) => print("Club added"))
+      .catchError((error) => print("Failed to update club: $error"));
 }
