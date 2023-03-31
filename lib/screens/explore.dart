@@ -13,9 +13,14 @@ class Explore extends StatefulWidget {
 }
 
 class _Explore extends State<Explore> {
+  var w;
   String search = '';
+  TextEditingController searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    w = MediaQuery.of(context).size.width;
+
     return Scaffold(
         appBar: nav("Explore"),
         drawer: sidebar(context),
@@ -29,7 +34,7 @@ class _Explore extends State<Explore> {
                     SizedBox(height: 10),
                     allTabs(),
                     SizedBox(height: 10),
-                    allClubs(context, search),
+                    allClubs(context, searchController.text),
                   ],
                 ))));
   }
@@ -41,42 +46,42 @@ class _Explore extends State<Explore> {
         if (snapshot.hasData) {
           List<Map> clubsInfo = snapshot.data!;
           List<Widget> clubWidgets = [];
-          print(clubsInfo);
 
           for (int i = 0; i < clubsInfo.length; i++) {
-            // if (searched.isEmpty) {
-            //   clubWidgets.add(ClubCardSquare(
-            //       club: Club(
-            //           name: clubsInfo[i]['name'],
-            //           day: clubsInfo[i]['day'],
-            //           advisorName: clubsInfo[i]['advisor_name'],
-            //           advisorEmail: clubsInfo[i]['advisor_email'],
-            //           category: clubsInfo[i]['category'],
-            //           id: clubsInfo[i]['id'].toString(),
-            //           description: clubsInfo[i]['description'],
-            //           president: clubsInfo[i]['president'],
-            //           vicePresident: clubsInfo[i]['vice_president'],
-            //           secretary: clubsInfo[i]['secretary'])));
-            //   continue;
-            // }
-            // if (clubsInfo[i]['name'].toLowerCase().contains(searched)) {
-            clubWidgets.add(ClubCardSquare(
-                club: Club(
-                    name: clubsInfo[i]['name'],
-                    day: clubsInfo[i]['day'],
-                    advisorName: clubsInfo[i]['advisor_name'],
-                    advisorEmail: clubsInfo[i]['advisor_email'],
-                    category: clubsInfo[i]['category'],
-                    id: clubsInfo[i]['id'].toString(),
-                    description: clubsInfo[i]['description'],
-                    president: clubsInfo[i]['president'],
-                    vicePresident: clubsInfo[i]['vice_president'],
-                    secretary: clubsInfo[i]['secretary'])));
-            // }
+            if (searched == null || searched.isEmpty) {
+              clubWidgets.add(ClubCardSquare(
+                  club: Club(
+                      name: clubsInfo[i]['name'] ?? "",
+                      day: clubsInfo[i]['day'] ?? "",
+                      advisorName: clubsInfo[i]['advisor_name'] ?? "",
+                      advisorEmail: clubsInfo[i]['advisor_email'] ?? "",
+                      category: clubsInfo[i]['category'] ?? "",
+                      id: clubsInfo[i]['id'].toString() ?? "",
+                      description: clubsInfo[i]['description'] ?? "",
+                      president: clubsInfo[i]['president'] ?? "",
+                      vicePresident: clubsInfo[i]['vice_president'] ?? "",
+                      secretary: clubsInfo[i]['secretary'] ?? "")));
+              continue;
+            }
+
+            if ((clubsInfo[i]['name'] ?? "").contains(searched)) {
+              clubWidgets.add(ClubCardSquare(
+                  club: Club(
+                      name: clubsInfo[i]['name'] ?? "",
+                      day: clubsInfo[i]['day'] ?? "",
+                      advisorName: clubsInfo[i]['advisor_name'] ?? "",
+                      advisorEmail: clubsInfo[i]['advisor_email'] ?? "",
+                      category: clubsInfo[i]['category'] ?? "",
+                      id: clubsInfo[i]['id'].toString() ?? "",
+                      description: clubsInfo[i]['description'] ?? "",
+                      president: clubsInfo[i]['president'] ?? "",
+                      vicePresident: clubsInfo[i]['vice_president'] ?? "",
+                      secretary: clubsInfo[i]['secretary'] ?? "")));
+            }
           }
 
           var w = MediaQuery.of(context).size.width;
-          int crossAxisCount = (w / 500).ceil();
+          int crossAxisCount = (w / 400).ceil();
 
           return Expanded(
             child: GridView.count(
@@ -99,17 +104,21 @@ class _Explore extends State<Explore> {
     return Column(
       children: [
         TextField(
+          controller: searchController,
           decoration: InputDecoration(
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            labelText: 'Search a Club',
-            suffixIcon: Icon(Icons.search),
-          ),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+              labelText: 'Search a Club',
+              suffixIcon: IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () {
+                    allClubs(context, searchController.text);
+                  })),
           onChanged: (text) {
-            setState(() => search = text.toLowerCase());
+            // setState(() => search = text.toLowerCase());
           },
         ),
       ],
@@ -118,16 +127,30 @@ class _Explore extends State<Explore> {
 
   Widget allTabs() {
     List<Widget> tabs = [];
+    List<String> categories = [
+      "Athletics",
+      "Careers",
+      "Cultural/Religious",
+      "Discussion",
+      "Games",
+      "Hobbies",
+      "Performance/Art",
+      "Publications",
+      "Science",
+      "Volunteer/Activism",
+      "Activities"
+    ];
 
     for (int i = 0; i < 10; i++) {
       tabs.add(Container(
           margin: EdgeInsets.only(right: 5),
+          padding: EdgeInsets.all(5),
           color: Colors.grey[300],
           child: TextButton(
               onPressed: () {},
               child: Text(
-                "Tab $i",
-                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                "${categories[i]}",
+                style: TextStyle(fontSize: w * 0.012, color: Colors.grey[600]),
               ))));
     }
     return (SingleChildScrollView(

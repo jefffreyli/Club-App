@@ -28,16 +28,16 @@ class _HomeState extends State<Home> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                   const SizedBox(height: 30),
-                  const Text("Club Categories",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30,
-                      )),
-                  const SizedBox(height: 25),
-                  sectionTabs(),
+                  // const Text("Club Categories",
+                  //     textAlign: TextAlign.left,
+                  //     style: TextStyle(
+                  //       fontWeight: FontWeight.bold,
+                  //       fontSize: 30,
+                  //     )),
+                  // const SizedBox(height: 25),
+                  // sectionTabs(),
 
-                  const SizedBox(height: 75),
+                  // const SizedBox(height: 75),
 
                   //my clubs
                   const Text("My Clubs",
@@ -67,14 +67,23 @@ class _HomeState extends State<Home> {
     List<Widget> clubWidgets = [];
 
     for (int i = 0; i < 10; i++) {
-      clubWidgets.add( ClubCardHorizontal(
-        // clubName: "Club Name",
-        // clubDay: "Monday",
-        // clubAdvisor: "Ms. Qiu",
-        // clubCategory: "STEM",
-        // clubID: "16",
-        club: Club(name: "Club Name", day:"Monday", advisorName:"Ms. Qiu", advisorEmail:"qiuw@bxscience.edu", category:"STEM", id:"16", description:"awdl waij lajdlaj dklwj alkjd wlkaj lkj.", president:"President", vicePresident:"Vice President", secretary:"Seceretary")
-      ));
+      clubWidgets.add(ClubCardHorizontal(
+          // clubName: "Club Name",
+          // clubDay: "Monday",
+          // clubAdvisor: "Ms. Qiu",
+          // clubCategory: "STEM",
+          // clubID: "16",
+          club: Club(
+              name: "Club Name",
+              day: "Monday",
+              advisorName: "Ms. Qiu",
+              advisorEmail: "qiuw@bxscience.edu",
+              category: "STEM",
+              id: "16",
+              description: "awdl waij lajdlaj dklwj alkjd wlkaj lkj.",
+              president: "President",
+              vicePresident: "Vice President",
+              secretary: "Seceretary")));
     }
     return (Column(children: clubWidgets));
   }

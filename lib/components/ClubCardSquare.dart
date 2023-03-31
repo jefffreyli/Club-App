@@ -13,21 +13,17 @@ class ClubCardSquare extends StatefulWidget {
 }
 
 class _ClubCardSquareState extends State<ClubCardSquare> {
+  var h;
   @override
   Widget build(BuildContext context) {
+    h = MediaQuery.of(context).size.height;
+
     return GestureDetector(
         onTap: (() {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ClubHome(
-                    club: widget.club
-                        // clubName: widget.club.name,
-                        // clubDay: widget.club.day,
-                        // clubAdvisor: widget.club.advisorName,
-                        // clubCategory: widget.club.category,
-                        // clubID: widget.id,
-                      )));
+                  builder: (context) => ClubHome(club: widget.club)));
         }),
         // height: sHeight * 0.6,
         child: Card(
@@ -47,8 +43,10 @@ class _ClubCardSquareState extends State<ClubCardSquare> {
                     Text(widget.club.name,
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 20),
-                    const Text(
-                        "lorem ipsum is dummy text. lorem ipsum is dummy text. lorem ipsum is dummy text."),
+                    Text(
+                      "lorem ipsum is dummy text. lorem ipsum is dummy text. lorem ipsum is dummy text.",
+                      overflow: TextOverflow.visible,
+                    ),
                     const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -58,22 +56,26 @@ class _ClubCardSquareState extends State<ClubCardSquare> {
                         tag(widget.club.id),
                       ],
                     ),
-                    const SizedBox(height: 5),
+                    SizedBox(height: h * 0.05),
                     TextButton(
-                      child: Text(
-                        "Join",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
                       style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.all<Color>(Colors.green),
                       ),
                       onPressed: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(3),
+                        child: Text(
+                          "Join",
+                          style: TextStyle(
+                            fontSize: h * 0.02,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
 
-                    const SizedBox(height: 10)
+                    const SizedBox(height: 30)
                     // buildJoinLeave(widget.clubID.toString())
                   ]),
             )));

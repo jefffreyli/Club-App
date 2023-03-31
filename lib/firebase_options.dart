@@ -21,11 +21,20 @@ class DefaultFirebaseOptions {
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        return android;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for android - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -51,33 +60,5 @@ class DefaultFirebaseOptions {
     authDomain: 'club-app-6e8cb.firebaseapp.com',
     storageBucket: 'club-app-6e8cb.appspot.com',
     measurementId: 'G-1PRF0XLTVE',
-  );
-
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCaSOtCHvboYJFsCEa9AK9UFIPZr66AA3k',
-    appId: '1:945754618812:android:879117bd39f45b9e1b49b9',
-    messagingSenderId: '945754618812',
-    projectId: 'club-app-6e8cb',
-    storageBucket: 'club-app-6e8cb.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBr4rmBz2AIEWggklUQ3We83Vr-Ebu5NfU',
-    appId: '1:945754618812:ios:f232d0a8eb5f820d1b49b9',
-    messagingSenderId: '945754618812',
-    projectId: 'club-app-6e8cb',
-    storageBucket: 'club-app-6e8cb.appspot.com',
-    iosClientId: '945754618812-grsc5v740cgog5c1mq5j1f1djc9po1bf.apps.googleusercontent.com',
-    iosBundleId: 'com.jeffreyli.clubAppFrontend',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBr4rmBz2AIEWggklUQ3We83Vr-Ebu5NfU',
-    appId: '1:945754618812:ios:20601160a91223ea1b49b9',
-    messagingSenderId: '945754618812',
-    projectId: 'club-app-6e8cb',
-    storageBucket: 'club-app-6e8cb.appspot.com',
-    iosClientId: '945754618812-javlbjgthsp7tcggskd6edlq4idi9aul.apps.googleusercontent.com',
-    iosBundleId: 'com.example.clubAppFrontend',
   );
 }

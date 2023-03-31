@@ -15,21 +15,19 @@ Widget sidebar(BuildContext context) {
     child: Column(
       children: [
         SizedBox(
-          height: 150,
+          height: 100,
           child: DrawerHeader(
             decoration: BoxDecoration(
               color: Colors.grey[200],
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Transform.translate(
-                  offset:
-                      Offset(0, -10), // move the CircleAvatar up by 25 pixels
-                  child: CircleAvatar(
-                    radius: 20,
-                    backgroundImage: NetworkImage(
-                      '${userData['image_url']}',
-                    ),
+                SizedBox(height: 5),
+                CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(
+                    '${userData['image_url']}',
                   ),
                 ),
                 SizedBox(width: 25),

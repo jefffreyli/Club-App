@@ -7,53 +7,59 @@ import '../utils.dart';
 class SignIn extends StatelessWidget {
   SignIn({super.key});
 
+  var w;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    w = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: SafeArea(
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(height: 100),
-              heading(),
-              const SizedBox(height: 25),
-              textField(
-                emailController,
-                'Email',
-                false,
-              ),
-              const SizedBox(height: 10),
-              textField(
-                passwordController,
-                'Password',
-                true,
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      'Forgot Password?',
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
-                  ],
+          child: Container(
+            margin: EdgeInsets.only(left: w * 0.28, right: w * 0.28),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 100),
+                heading(),
+                const SizedBox(height: 25),
+                textField(
+                  emailController,
+                  'Email',
+                  false,
                 ),
-              ),
-              const SizedBox(height: 25),
-              signInButton(context),
-              const SizedBox(height: 25),
-              continueWithGoogle(),
-              const SizedBox(height: 25),
-              bottomSignUpText(context)
-            ],
+                const SizedBox(height: 10),
+                textField(
+                  passwordController,
+                  'Password',
+                  true,
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Forgot Password?',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 25),
+                signInButton(context),
+                const SizedBox(height: 25),
+                continueWithGoogle(),
+                const SizedBox(height: 25),
+                bottomSignUpText(context)
+              ],
+            ),
           ),
         ),
       ),
