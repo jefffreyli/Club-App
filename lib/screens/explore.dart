@@ -147,7 +147,9 @@ class _Explore extends State<Explore> {
           padding: EdgeInsets.all(5),
           color: Colors.grey[300],
           child: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                searchController.text = "${categories[i]}";
+              },
               child: Text(
                 "${categories[i]}",
                 style: TextStyle(fontSize: w * 0.012, color: Colors.grey[600]),

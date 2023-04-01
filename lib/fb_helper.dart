@@ -176,3 +176,33 @@ Future<void> addClub(String clubId) async {
       .then((value) => print("Club added"))
       .catchError((error) => print("Failed to update club: $error"));
 }
+
+Future<void> takeAttendance(
+    List<String> osis, String date, String clubID) async {
+  print(clubID);
+  String clubDocId = await getClubDocumentId(clubID);
+  // String clubDocId = "0LGa9MMNP3pBVzB46qx0";
+  print(clubDocId);
+
+  // for (int i = 0; i < osis.length; i++) {
+  //   await db
+  //       .collection("clubs")
+  //       .doc("$clubDocId")
+  //       .collection("attendance")
+  //       .doc("${osis[i]}")
+  //       .set({"osis": "${osis[i]}", "date": '$date'});
+  // }
+}
+
+Future<String> getClubDocumentId(String id) async {
+
+
+  final QuerySnapshot snapshot =
+      await db.collection('clubs').where('id', isEqualTo: id).get();
+  final List<DocumentSnapshot> documents = snapshot.docs;
+  if (documents.isNotEmpty) {
+    return documents.first.id;
+  } else {
+    return "";
+  }
+}
