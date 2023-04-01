@@ -19,17 +19,27 @@ class _SignUpState extends State<SignUp> {
   TextEditingController yearController = TextEditingController();
   TextEditingController classController = TextEditingController();
 
+  var w;
   @override
   Widget build(BuildContext context) {
+    w = MediaQuery.of(context).size.width;
+    double margin = 0;
+    if (w < 600)
+      margin = 15;
+    else if (w < 900)
+      margin = 60;
+    else
+      margin = w * 0.3;
+
     return Scaffold(
         body: SafeArea(
             child: SingleChildScrollView(
                 child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 25),
+                    margin: EdgeInsets.only(left: margin, right: margin),
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const SizedBox(height: 100),
+                          const SizedBox(height: 75),
                           heading(),
                           const SizedBox(height: 25),
                           buildField(nameController, "Full Name"),
@@ -49,6 +59,7 @@ class _SignUpState extends State<SignUp> {
                           continueWithGoogle(),
                           const SizedBox(height: 25),
                           bottomSignInText(),
+                          const SizedBox(height: 25),
                         ])))));
   }
 
@@ -75,7 +86,7 @@ class _SignUpState extends State<SignUp> {
         createAccount(emailController.text, passwordController.text);
         addUser(nameController.text, osisController.text, classController.text,
             yearController.text, emailController.text, passwordController.text);
-            
+
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => SignIn(),

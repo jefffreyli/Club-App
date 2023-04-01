@@ -5,18 +5,6 @@ import 'attendance.dart';
 import '../clubModel.dart';
 
 class ClubHome extends StatefulWidget {
-  // final String clubName;
-  // final String clubDay;
-  // final String clubAdvisor;
-  // final String clubCategory;
-  // final String clubID;
-  // const ClubHome(
-  //     {super.key,
-  //     required this.clubName,
-  //     required this.clubDay,
-  //     required this.clubAdvisor,
-  //     required this.clubCategory,
-  //     required this.clubID});
   final Club club;
   const ClubHome({super.key, required this.club});
 
@@ -30,6 +18,15 @@ class _ClubHomeState extends State<ClubHome> {
   Widget build(BuildContext context) {
     w = MediaQuery.of(context).size.width;
     h = MediaQuery.of(context).size.height;
+
+    double margin = 0;
+    if (w < 600)
+      margin = 15;
+    else if (w < 900)
+      margin = 60;
+    else
+      margin = 75;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -64,7 +61,7 @@ class _ClubHomeState extends State<ClubHome> {
       ),
       drawer: sidebar(context),
       body: Container(
-          margin: EdgeInsets.fromLTRB(25, 0, 25, 0),
+          margin: EdgeInsets.fromLTRB(margin, 0, margin, 0),
           child: clubDetails("assets/logo.png")),
     );
   }
@@ -90,13 +87,26 @@ class _ClubHomeState extends State<ClubHome> {
         const SizedBox(height: 50),
         const Text("Overview", style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 25),
-        const Text(
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."),
+        Text(widget.club.description),
         const SizedBox(height: 25),
         const Text("Leaders", style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 25),
         Column(
-            children: List.generate(3, (index) {
+            children: List.generate(4, (index) {
+          List leaders = [
+            widget.club.president,
+            widget.club.vicePresident,
+            widget.club.secretary,
+            widget.club.advisorName
+          ];
+
+          List positions = [
+            "President",
+            "Vice President/Co-President",
+            "Secretary",
+            "Advisor"
+          ];
+
           return Container(
               margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
               child: Card(
@@ -106,40 +116,12 @@ class _ClubHomeState extends State<ClubHome> {
                     leading: ClipRRect(
                         borderRadius: BorderRadius.circular(50.0),
                         child: Image.asset("assets/logo.png")),
-                    title: Text(widget.club.advisorName),
-                    subtitle: const Text("Advisor"),
+                    title: Text(leaders[index]),
+                    subtitle: Text(positions[index]),
                   )));
         })),
-        const SizedBox(height: 25),
-        const Text("Related Clubs",
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 25),
-        SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(children: [
-              Text("Related Clubs"),
-              // buildRelatedClubs(widget.clubCategory, widget.clubID)
-            ]))
+        const SizedBox(height: 50),
       ],
     ));
   }
 }
-
-// List<Widget> buildRelatedClubs(String category, String clubID) {
-//   List<Widget> validClubs = [];
-//   for (int i = 1; i < monkey.length; i++) {
-//     if (monkey[i][2] == category && monkey[i][0] != clubID) {
-//       // debugPrint(monkey[i][0] + " parameter id:$clubID");
-//       validClubs.add(Padding(
-//           padding: const EdgeInsets.only(right: 20, left: 20),
-//           child: ClubCard(
-//               clubName: monkey[i][1],
-//               clubDay: monkey[i][3],
-//               clubAdvisor: monkey[i][4],
-//               clubCategory: category,
-//               clubID: monkey[i][0])));
-//     }
-//     if (validClubs.length == 5) break;
-//   }
-//   return validClubs;
-// }

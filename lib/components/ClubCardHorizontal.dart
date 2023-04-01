@@ -42,8 +42,8 @@ class _ClubCardHorizontalState extends State<ClubCardHorizontal> {
                   leading: ClipRRect(
                       borderRadius: BorderRadius.circular(50.0),
                       child: Image.asset("assets/logo.png")),
-                  title: Text(widget.club.advisorName),
-                  subtitle: const Text("Advisor"),
+                  title: Text(widget.club.name),
+                  subtitle:  Text(widget.club.category),
                 ))));
   }
 }

@@ -114,17 +114,17 @@ Widget sidebar(BuildContext context) {
             );
           },
         ),
-        ListTile(
-          title: const Text('Help Center'),
-          leading: Icon(Icons.help),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => Settings(),
-              ),
-            );
-          },
-        ),
+        // ListTile(
+        //   title: const Text('Help Center'),
+        //   leading: Icon(Icons.help),
+        //   onTap: () {
+        //     Navigator.of(context).push(
+        //       MaterialPageRoute(
+        //         builder: (context) => Settings(),
+        //       ),
+        //     );
+        //   },
+        // ),
         ListTile(
           title: const Text('Sign Out'),
           leading: Icon(

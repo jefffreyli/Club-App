@@ -164,7 +164,7 @@ Future<void> editUserData(Map<String, dynamic> user) async {
       .catchError((error) => print("Failed to update user: $error"));
 }
 
-Future<void> addClub(String clubId) async {
+Future<void> joinClub(String clubId) async {
   final documentId = await getDocumentIdByEmail(currentUserEmail!);
 
   await db
@@ -177,32 +177,56 @@ Future<void> addClub(String clubId) async {
       .catchError((error) => print("Failed to update club: $error"));
 }
 
+Future<void> leaveClub(String clubId) async {
+  final documentId = await getDocumentIdByEmail(currentUserEmail!);
+
+  await db
+      .collection("users")
+      .doc(documentId)
+      .update({
+        "clubs": FieldValue.arrayRemove([clubId])
+      })
+      .then((value) => print("Club added"))
+      .catchError((error) => print("Failed to update club: $error"));
+}
+
 Future<void> takeAttendance(
     List<String> osis, String date, String clubID) async {
-  print(clubID);
-  String clubDocId = await getClubDocumentId(clubID);
-  // String clubDocId = "0LGa9MMNP3pBVzB46qx0";
-  print(clubDocId);
+  final clubDocId = await getClubDocumentId(clubID);
+  // print("clubId: $clubID");
+  // print("clubDocId: $clubDocId");
+  // print("documentId: $documentId");
 
-  // for (int i = 0; i < osis.length; i++) {
-  //   await db
-  //       .collection("clubs")
-  //       .doc("$clubDocId")
-  //       .collection("attendance")
-  //       .doc("${osis[i]}")
-  //       .set({"osis": "${osis[i]}", "date": '$date'});
-  // }
+  for (int i = 0; i < osis.length; i++) {
+    await db
+        .collection("clubs")
+        .doc(clubDocId)
+        .collection("attendance")
+        .doc()
+        .set({"osis": "${osis[i]}", "date": '$date'});
+  }
 }
 
 Future<String> getClubDocumentId(String id) async {
-
-
   final QuerySnapshot snapshot =
-      await db.collection('clubs').where('id', isEqualTo: id).get();
-  final List<DocumentSnapshot> documents = snapshot.docs;
-  if (documents.isNotEmpty) {
-    return documents.first.id;
+      await db.collection('clubs').where('id', isEqualTo: int.parse(id)).get();
+  if (snapshot.docs.isNotEmpty) {
+    return snapshot.docs.first.id;
   } else {
-    return "";
+    return "Couldn't find club";
   }
+}
+
+Future<bool> presentOnDate(String date, String clubId, String osis) async {
+  final clubDocId = await getClubDocumentId(clubId);
+
+  final querySnapshot = await db
+      .collection("clubs")
+      .doc(clubDocId)
+      .collection("attendance")
+      .where("osis", isEqualTo: osis)
+      .where("date", isEqualTo: date)
+      .get();
+
+  return querySnapshot.docs.isNotEmpty; // Return true if there are any documents in the querySnapshot, else false.
 }

@@ -14,6 +14,13 @@ class SignIn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     w = MediaQuery.of(context).size.width;
+    double margin = 0;
+    if (w < 600)
+      margin = 15;
+    else if (w < 900)
+      margin = 60;
+    else
+      margin = w * 0.3;
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -21,7 +28,7 @@ class SignIn extends StatelessWidget {
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Container(
-            margin: EdgeInsets.only(left: w * 0.28, right: w * 0.28),
+            margin: EdgeInsets.only(left: margin, right: margin),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -134,8 +141,9 @@ class SignIn extends StatelessWidget {
         signIn(emailController.text, passwordController.text);
       },
       child: Container(
-        padding: const EdgeInsets.all(15),
-        margin: const EdgeInsets.symmetric(horizontal: 25),
+        padding: const EdgeInsets.only(top: 15, bottom: 15),
+        margin: EdgeInsets.only(left: 15, right: 15),
+
         decoration: BoxDecoration(
           color: Colors.black,
           borderRadius: BorderRadius.circular(8),

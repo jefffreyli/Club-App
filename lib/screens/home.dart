@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:club_app_frontend/components/ClubCardHorizontal.dart';
 import 'package:club_app_frontend/components/SectionTab.dart';
+import 'package:club_app_frontend/fb_helper.dart';
 import 'package:flutter/material.dart';
 
 import '../clubModel.dart';
@@ -45,7 +47,7 @@ class _HomeState extends State<Home> {
                         fontSize: 30,
                       )),
                   const SizedBox(height: 25),
-                  myClubs(),
+                  myClubs(context),
 
                   const SizedBox(height: 75),
                 ])))));
@@ -61,28 +63,39 @@ class _HomeState extends State<Home> {
         scrollDirection: Axis.horizontal, child: Row(children: tabs)));
   }
 
-  Widget myClubs() {
-    List<Widget> clubWidgets = [];
+  Widget myClubs(BuildContext context) {
+    return StreamBuilder<List<Map>>(
+        stream: getAllClubs(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Something went wrong');
+          }
 
-    for (int i = 0; i < 10; i++) {
-      clubWidgets.add(ClubCardHorizontal(
-          // clubName: "Club Name",
-          // clubDay: "Monday",
-          // clubAdvisor: "Ms. Qiu",
-          // clubCategory: "STEM",
-          // clubID: "16",
-          club: Club(
-              name: "Club Name",
-              day: "Monday",
-              advisorName: "Ms. Qiu",
-              advisorEmail: "qiuw@bxscience.edu",
-              category: "STEM",
-              id: "16",
-              description: "awdl waij lajdlaj dklwj alkjd wlkaj lkj.",
-              president: "President",
-              vicePresident: "Vice President",
-              secretary: "Seceretary")));
-    }
-    return (Column(children: clubWidgets));
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          }
+
+          List<Map> clubsInfo = snapshot.data!;
+          List<Widget> myClubWidgets = [];
+          List myClubIds = userData['clubs'];
+
+          for (int i = 0; i < clubsInfo.length; i++) {
+            if (myClubIds.contains( (clubsInfo[i]["id"].toString() ?? ""))) {
+              myClubWidgets.add(ClubCardHorizontal(
+                  club: Club(
+                      name: clubsInfo[i]['name'] ?? "",
+                      day: clubsInfo[i]['day'] ?? "",
+                      advisorName: clubsInfo[i]['advisor_name'] ?? "",
+                      advisorEmail: clubsInfo[i]['advisor_email'] ?? "",
+                      category: clubsInfo[i]['category'] ?? "",
+                      id: clubsInfo[i]['id'].toString() ?? "",
+                      description: clubsInfo[i]['description'] ?? "",
+                      president: clubsInfo[i]['president'] ?? "",
+                      vicePresident: clubsInfo[i]['vice_president'] ?? "",
+                      secretary: clubsInfo[i]['secretary'] ?? "")));
+            }
+          }
+          return (Column(children: myClubWidgets));
+        });
   }
 }

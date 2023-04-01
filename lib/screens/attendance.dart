@@ -38,11 +38,10 @@ class _AttendanceState extends State<Attendance> {
                   },
                 );
               },
-              child: Icon(Icons.add),
+              child: Icon(Icons.calendar_today),
               backgroundColor: Colors.green,
             )
           : null,
-
       body: Container(
           margin: EdgeInsets.only(left: 20, right: 20),
           child:
@@ -58,34 +57,36 @@ class _AttendanceState extends State<Attendance> {
               firstDay: DateTime.utc(2022, 1, 1),
               lastDay: DateTime.utc(2030, 1, 1),
               focusedDay: DateTime.now(),
-              // calendarBuilders: CalendarBuilders(
-              //   markerBuilder: (context, day, events) {
-              //     if (clubsMap[widget.clubID] == null) {
-              //       fb.addClub(widget.clubID, docID, userData['clubs']);
-              //     }
+              calendarBuilders: CalendarBuilders(
+                markerBuilder: (context, day, events) {
+                  List data = day.toString().split(" ");
+                  List dateList = data[0].split("-");
 
-              //     for (int i = 0; i < clubsMap[widget.clubID].length; i++) {
-              //       List presentDate = clubsMap[widget.clubID][i].split("-");
-              //       String m = presentDate[0];
-              //       String d = presentDate[1];
-              //       String y = presentDate[2];
+                  String date =
+                      dateList[1] + "-" + dateList[2] + "-" + dateList[0];
 
-              //       if (day.year.toString() == y &&
-              //           day.month.toString() == m &&
-              //           day.day.toString() == d) {
-              //          return buildMarker(Colors.green);
-              //       }
-              //     }
-              //   },
-              // ),
+                  return FutureBuilder<bool>(
+                    future:
+                        presentOnDate(date, widget.club.id, userData['osis']),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData && snapshot.data == true) {
+                        // Add your logic here if the user is present on this date.
+                        return marker(Colors.green, 5);
+                      } else {
+                        return Container();
+                      }
+                    },
+                  );
+                },
+              ),
             ),
             const SizedBox(height: 50),
             Row(children: [
-              SizedBox(width: 20, child: buildMarker(Colors.green, 10)),
+              SizedBox(width: 20, child: marker(Colors.green, 10)),
               Text("  =  Present")
             ]),
             Row(children: [
-              SizedBox(width: 20, child: buildMarker(Colors.red, 10)),
+              SizedBox(width: 20, child: marker(Colors.red, 10)),
               Text("  =  Absent")
             ]),
             const SizedBox(height: 25),
@@ -95,53 +96,21 @@ class _AttendanceState extends State<Attendance> {
             Text(
                 "Attendance is usually updated once a week. If you were wrongfully marked absent for the day, it is your responsibility to contact the club leaders and get it resolved."),
           ])),
-      // floatingActionButton:
-      //     userData['user_type'] != "Member" ? buildTakeAttendance() : null,
     );
   }
 
-  // Widget buildTextFieldAttendance() {
-  //   return (Column(children: [
-  //     TextField(
-  //       controller: attendanceController,
-  //       decoration: const InputDecoration(
-  //         border: OutlineInputBorder(),
-  //         hintText: 'Paste OSIS',
-  //       ),
-  //     ),
-  //     TextButton(
-  //       child: Text("take attendance"),
-  //       onPressed: () {
-  //         var dt = DateTime.now();
-  //         String date = "${dt.month}-${dt.day}-${dt.year}";
-  //         // fb.takeAttendance(widget.clubID, attendanceController.text, "$date");
-  //       },
-  //     )
-  //   ]));
-  // }
-
-  // Widget buildTakeAttendance() {
-  //   return FloatingActionButton(
-  //     onPressed: () {
-  //       showModalBottomSheet(
-  //         context: context,
-  //         builder: (BuildContext context) {
-  //           return buildTextFieldAttendance();
-  //         },
-  //       );
-  //     },
-  //     child: Icon(Icons.add),
-  //   );
-  // }
-
-  Widget buildMarker(Color c, double h) {
+  Widget marker(Color c, double h) {
     return Container(
         height: h, decoration: BoxDecoration(color: c, shape: BoxShape.circle));
   }
 
   Widget takeAttendanceDialog() {
-    DateTime currentDate = DateTime.now();
-    String formattedDate = DateFormat('MM-dd-yyyy').format(currentDate);
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('MM-dd-yyyy').format(now);
+    DateTime firstDate = DateTime(now.year, now.month, now.day);
+    DateTime lastDate = DateTime(now.year, now.month + 1, 0);
+
+    DateTime datePicked;
 
     return AlertDialog(
       backgroundColor: Color(0xfff5f5f5),
@@ -157,7 +126,9 @@ class _AttendanceState extends State<Attendance> {
               controller: attendanceController,
               maxLines: (h / 30).toInt(),
               decoration: InputDecoration(
-                hintText: 'Enter paragraph of text',
+                hoverColor: Colors.grey[200],
+                hintText:
+                    'Paste OSIS numbers, each on separate lines, to take attendance',
                 border: OutlineInputBorder(
                   borderSide: BorderSide.none,
                   borderRadius: BorderRadius.circular(4.0),
@@ -174,6 +145,26 @@ class _AttendanceState extends State<Attendance> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: TextButton(
+                    onPressed: () {
+                      showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: firstDate,
+                        lastDate: lastDate,
+                      ).then((pickedDate) {
+                        if (pickedDate != null) {
+                          setState(() {
+                            datePicked = pickedDate;
+                          });
+                        }
+                      });
+                    },
+                    child: Text('Select date', style: TextStyle(color: Colors.grey)),
+                  ),
+                ),
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();

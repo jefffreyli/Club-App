@@ -1,5 +1,6 @@
 import '../clubModel.dart';
 import 'package:flutter/material.dart';
+import '../fb_helper.dart';
 import '../screens/clubHome.dart';
 import 'Tag.dart';
 
@@ -13,10 +14,26 @@ class ClubCardSquare extends StatefulWidget {
 }
 
 class _ClubCardSquareState extends State<ClubCardSquare> {
-  var h;
+  var h, w;
+  String status = "";
+
   @override
   Widget build(BuildContext context) {
+    if (userData['clubs'].contains(widget.club.id))
+      status = "Leave";
+    else
+      status = "Join";
+
     h = MediaQuery.of(context).size.height;
+    w = MediaQuery.of(context).size.width;
+    double logoRadius = 0;
+
+    if (w < 600)
+      logoRadius = 35;
+    else if (w < 1000)
+      logoRadius = 45;
+    else
+      logoRadius = 60;
 
     return GestureDetector(
         onTap: (() {
@@ -25,59 +42,72 @@ class _ClubCardSquareState extends State<ClubCardSquare> {
               MaterialPageRoute(
                   builder: (context) => ClubHome(club: widget.club)));
         }),
-        // height: sHeight * 0.6,
-        child: Card(
-            elevation: 3,
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5.0)),
-            child: Padding(
-              padding: EdgeInsets.all(25),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    CircleAvatar(
-                        radius: 60,
-                        backgroundImage: AssetImage("assets/logo.png")),
-                    const SizedBox(height: 20),
-                    Text(widget.club.name,
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 20),
-                    Text(
-                      "lorem ipsum is dummy text. lorem ipsum is dummy text. lorem ipsum is dummy text.",
-                      overflow: TextOverflow.visible,
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        tag(widget.club.day),
-                        tag(widget.club.category),
-                        tag(widget.club.id),
-                      ],
-                    ),
-                    SizedBox(height: h * 0.05),
-                    TextButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.green),
+        child: Expanded(
+          child: Card(
+              elevation: 3,
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0)),
+              child: Padding(
+                padding: EdgeInsets.all(25),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      CircleAvatar(
+                          radius: logoRadius,
+                          backgroundImage: AssetImage("assets/logo.png")),
+                      const SizedBox(height: 20),
+                      Text(widget.club.name,
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+                      Text(
+                        "lorem ipsum is dummy text. lorem ipsum is dummy text. lorem ipsum is dummy text.",
+                        overflow: TextOverflow.visible,
                       ),
-                      onPressed: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.all(3),
-                        child: Text(
-                          "Join",
-                          style: TextStyle(
-                            fontSize: h * 0.02,
-                            color: Colors.white,
-                          ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          tag(widget.club.day),
+                          tag(widget.club.category),
+                          tag(widget.club.id),
+                        ],
+                      ),
+                      SizedBox(height: h * 0.03),
+                      TextButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              status == "Join" ? Colors.green : Colors.red),
                         ),
-                      ),
-                    ),
+                        onPressed: () {
+                          setState(() {
+                            if (status == "Join")
+                              status = "Leave";
+                            else {
+                              status = "Join";
+                            }
 
-                    const SizedBox(height: 30)
-                    // buildJoinLeave(widget.clubID.toString())
-                  ]),
-            )));
+                            if (status == "Join") {
+                              leaveClub(widget.club.id);
+                              userData['clubs'].remove(widget.club.id);
+                            }
+                            else{
+                              joinClub(widget.club.id);
+                              userData['clubs'].add(widget.club.id);
+                            }
+                          });
+                        },
+                        child: Text("$status",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                            )),
+                      ),
+
+                      const SizedBox(height: 30)
+                      // buildJoinLeave(widget.clubID.toString())
+                    ]),
+              )),
+        ));
   }
 }
