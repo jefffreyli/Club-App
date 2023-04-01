@@ -18,7 +18,7 @@ Widget sidebar(BuildContext context) {
           height: 100,
           child: DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.grey[200],
+              color: Colors.grey[100],
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
