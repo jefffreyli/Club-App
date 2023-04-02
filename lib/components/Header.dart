@@ -1,9 +1,11 @@
 import 'package:club_app_frontend/screens/explore.dart';
 import 'package:club_app_frontend/screens/settings.dart';
 import 'package:club_app_frontend/screens/signin.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:club_app_frontend/utils.dart';
 import '../fb_helper.dart';
+import '../main.dart';
 import '../screens/home.dart';
 import '../screens/profile.dart';
 
@@ -132,7 +134,13 @@ Widget sidebar(BuildContext context) {
             color: Colors.red[300],
           ),
           onTap: () {
-            signOut();
+            // signOut(context);
+      //       showDialog(
+      // context: context,
+      // barrierDismissible: false,
+      // builder: (context) => Center(child: CircularProgressIndicator()));
+            FirebaseAuth.instance.signOut();
+            // navigatorKey.currentState!.popUntil((route) => route.isFirst);
           },
         ),
       ],

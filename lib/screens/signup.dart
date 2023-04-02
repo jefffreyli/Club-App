@@ -4,6 +4,7 @@ import 'home.dart';
 import 'signin.dart';
 import '../utils.dart';
 
+
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
 
@@ -83,15 +84,15 @@ class _SignUpState extends State<SignUp> {
   Widget signUpButton(BuildContext context) {
     return TextButton(
       onPressed: () {
-        createAccount(emailController.text, passwordController.text);
+        createAccount(emailController.text, passwordController.text, context);
         addUser(nameController.text, osisController.text, classController.text,
             yearController.text, emailController.text, passwordController.text);
 
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => SignIn(),
-          ),
-        );
+        // Navigator.of(context).push(
+        //   MaterialPageRoute(
+        //     builder: (context) => SignIn(),
+        //   ),
+        // );
       },
       child: Container(
         padding: const EdgeInsets.all(15),

@@ -72,7 +72,7 @@ class _HomeState extends State<Home> {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Center(child:CircularProgressIndicator());
           }
 
           List<Map> clubsInfo = snapshot.data!;

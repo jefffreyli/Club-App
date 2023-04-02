@@ -16,11 +16,14 @@ Future<void> main() async {
   init();
 }
 
+final navigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       // darkTheme: ThemeData.dark(),
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primaryColor: Colors.grey[100]),
       home: StreamBuilder<User?>(

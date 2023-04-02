@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:club_app_frontend/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/material.dart';
 
 var db = FirebaseFirestore.instance;
 final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
@@ -13,7 +15,12 @@ void init() async {
   getAllClubs();
 }
 
-Future<void> signIn(String emailAddress, String password) async {
+Future<void> signIn(String emailAddress, String password, BuildContext context) async {
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(child: CircularProgressIndicator()));
+
   try {
     final credential = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: emailAddress, password: password);
@@ -24,9 +31,16 @@ Future<void> signIn(String emailAddress, String password) async {
       print('Wrong password provided for that user.');
     }
   }
+  navigatorKey.currentState!.popUntil((route) => route.isFirst);
 }
 
-Future<void> createAccount(String emailAddress, String password) async {
+Future<void> createAccount(
+    String emailAddress, String password, BuildContext context) async {
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(child: CircularProgressIndicator()));
+
   try {
     final credential =
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -42,10 +56,20 @@ Future<void> createAccount(String emailAddress, String password) async {
   } catch (e) {
     print(e);
   }
+
+  navigatorKey.currentState!.popUntil((route) => route.isFirst);
 }
 
-Future<void> signOut() async {
+Future<void> signOut(BuildContext context) async {
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(child: CircularProgressIndicator()));
+
   await FirebaseAuth.instance.signOut();
+
+  // navigatorKey.currentState!.popUntil((route) => route.isFirst);
+
 }
 
 Future<UserCredential> signInWithGoogle() async {
@@ -138,7 +162,7 @@ Future<void> addUser(String full_name, String osis, String official_class,
       'clubs': [],
       'user_type': "Member",
       'about_me': "Hi! I'm $full_name.",
-      'appearance': "dark",
+      'appearance': "light",
       'email_notifications': "true",
       'image_url':
           "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg",
@@ -228,5 +252,6 @@ Future<bool> presentOnDate(String date, String clubId, String osis) async {
       .where("date", isEqualTo: date)
       .get();
 
-  return querySnapshot.docs.isNotEmpty; // Return true if there are any documents in the querySnapshot, else false.
+  return querySnapshot.docs
+      .isNotEmpty; // Return true if there are any documents in the querySnapshot, else false.
 }

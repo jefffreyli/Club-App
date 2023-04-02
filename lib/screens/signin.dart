@@ -1,6 +1,7 @@
 import 'package:club_app_frontend/screens/signup.dart';
 import 'package:flutter/material.dart';
 import '../fb_helper.dart';
+import '../main.dart';
 import 'home.dart';
 import '../utils.dart';
 
@@ -138,7 +139,7 @@ class SignIn extends StatelessWidget {
   Widget signInButton(BuildContext context) {
     return TextButton(
       onPressed: () async {
-        signIn(emailController.text, passwordController.text);
+        signIn(emailController.text, passwordController.text, context);
       },
       child: Container(
         padding: const EdgeInsets.only(top: 15, bottom: 15),
