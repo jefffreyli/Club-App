@@ -60,15 +60,15 @@ Future<void> createAccount(
   navigatorKey.currentState!.popUntil((route) => route.isFirst);
 }
 
-Future<void> signOut(BuildContext context) async {
+void signOut(BuildContext context) {
   showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => Center(child: CircularProgressIndicator()));
 
-  await FirebaseAuth.instance.signOut();
+  FirebaseAuth.instance.signOut();
 
-  // navigatorKey.currentState!.popUntil((route) => route.isFirst);
+  navigatorKey.currentState!.popUntil((route) => route.isFirst);
 
 }
 

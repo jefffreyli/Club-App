@@ -134,13 +134,15 @@ Widget sidebar(BuildContext context) {
             color: Colors.red[300],
           ),
           onTap: () {
-            // signOut(context);
-      //       showDialog(
-      // context: context,
-      // barrierDismissible: false,
-      // builder: (context) => Center(child: CircularProgressIndicator()));
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) =>
+                    Center(child: CircularProgressIndicator()));
+
             FirebaseAuth.instance.signOut();
-            // navigatorKey.currentState!.popUntil((route) => route.isFirst);
+
+            navigatorKey.currentState!.popUntil((route) => route.isFirst);
           },
         ),
       ],
@@ -158,11 +160,11 @@ PreferredSizeWidget? nav(String title) {
     centerTitle: true,
   );
 }
-// AppBar nav = AppBar(
-//   foregroundColor: Colors.grey[700],
-//   elevation: 1,
-//   backgroundColor: Colors.grey[100],
-//   title: Text("$appName",
-//       style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-//   centerTitle: true,
-// );
+
+Widget bottomNavBar(List<BottomNavigationBarItem> navs) {
+  return BottomNavigationBar(
+    currentIndex: 0,
+    selectedItemColor: Colors.grey,
+    items: navs,
+  );
+}

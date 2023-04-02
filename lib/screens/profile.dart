@@ -1,4 +1,4 @@
-import 'package:club_app_frontend/components/Header.dart';
+import 'package:club_app_frontend/components/Nav.dart';
 import 'package:club_app_frontend/screens/editProfile.dart';
 import 'package:club_app_frontend/utils.dart';
 import 'package:flutter/material.dart';

@@ -1,6 +1,6 @@
 import 'package:club_app_frontend/utils.dart';
 import 'package:flutter/material.dart';
-import '../components/Header.dart';
+import '../components/Nav.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});

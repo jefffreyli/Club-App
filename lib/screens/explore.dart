@@ -2,7 +2,7 @@ import 'package:club_app_frontend/fb_helper.dart';
 import 'package:flutter/material.dart';
 import '../clubModel.dart';
 import '../components/ClubCardSquare.dart';
-import '../components/Header.dart';
+import '../components/Nav.dart';
 import '../components/Search.dart';
 
 class Explore extends StatefulWidget {

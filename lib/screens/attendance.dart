@@ -1,4 +1,4 @@
-import 'package:club_app_frontend/components/Header.dart';
+import 'package:club_app_frontend/components/Nav.dart';
 import 'package:club_app_frontend/fb_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -26,8 +26,8 @@ class _AttendanceState extends State<Attendance> {
     w = MediaQuery.of(context).size.width;
     h = MediaQuery.of(context).size.height;
     return Scaffold(
-      drawer: sidebar(context),
-      appBar: nav("${widget.club.name} Attendance"),
+      // drawer: sidebar(context),
+      // appBar: nav("${widget.club.name} Attendance"),
       floatingActionButton: userData['user_type'] != "Member"
           ? FloatingActionButton(
               onPressed: () {

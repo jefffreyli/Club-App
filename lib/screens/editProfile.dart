@@ -1,7 +1,7 @@
 import 'package:club_app_frontend/fb_helper.dart';
 import 'package:flutter/material.dart';
 
-import '../components/Header.dart';
+import '../components/Nav.dart';
 import 'profile.dart';
 
 class EditProfile extends StatefulWidget {

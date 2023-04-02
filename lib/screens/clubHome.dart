@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../components/Header.dart';
+import '../components/Nav.dart';
 import '../components/Tag.dart';
 import 'attendance.dart';
 import '../clubModel.dart';
@@ -14,6 +14,8 @@ class ClubHome extends StatefulWidget {
 
 class _ClubHomeState extends State<ClubHome> {
   var w, h;
+  int selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     w = MediaQuery.of(context).size.width;
@@ -27,6 +29,21 @@ class _ClubHomeState extends State<ClubHome> {
     else
       margin = 75;
 
+    List<Widget> widgetOptions = [
+      Container(
+          margin: EdgeInsets.fromLTRB(margin, 0, margin, 0),
+          child: clubDetails("assets/logo.png")),
+      Text("Announcements"),
+       Attendance(club: widget.club),
+      people(),
+    ];
+
+    void _onItemTapped(int index) {
+      setState(() {
+        selectedIndex = index;
+      });
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -34,35 +51,31 @@ class _ClubHomeState extends State<ClubHome> {
         elevation: 1,
         backgroundColor: Colors.grey[100],
         title: Text(
-          "${widget.club.name}",
-          style: TextStyle(
+          widget.club.name,
+          style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
-        actions: [
-          Container(
-              margin: EdgeInsets.only(right: 10),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => Attendance(club: widget.club),
-                    ),
-                  );
-                },
-                icon: Icon(
-                  Icons.calendar_month,
-                  color: Colors.grey[700],
-                ),
-              )),
-        ],
       ),
       drawer: sidebar(context),
-      body: Container(
-          margin: EdgeInsets.fromLTRB(margin, 0, margin, 0),
-          child: clubDetails("assets/logo.png")),
+      body: widgetOptions.elementAt(selectedIndex),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        onTap: _onItemTapped,
+        unselectedItemColor: Colors.grey,
+        selectedItemColor: Colors.grey[800],
+        currentIndex: selectedIndex,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.announcement), label: "Announcements"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_month), label: "Attendance"),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: "People")
+        ],
+      ),
     );
   }
 
@@ -123,5 +136,37 @@ class _ClubHomeState extends State<ClubHome> {
         const SizedBox(height: 50),
       ],
     ));
+  }
+
+  Widget attendance(BuildContext context) {
+    return Container(
+        margin: const EdgeInsets.only(right: 10),
+        child: IconButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => Attendance(club: widget.club),
+              ),
+            );
+          },
+          icon: Icon(
+            Icons.calendar_month,
+            color: Colors.grey[700],
+          ),
+        ));
+  }
+
+  Widget people() {
+    return Container(
+        margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+        child: Card(
+            elevation: 3,
+            child: ListTile(
+              tileColor: Colors.grey[50],
+              leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(50.0),
+                  child: Image.asset("assets/logo.png")),
+              title: Text("Ravnoor Bedi"),
+            )));
   }
 }
