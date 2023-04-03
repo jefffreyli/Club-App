@@ -1,3 +1,5 @@
+import 'package:club_app_frontend/components/PersonCardHorizontal.dart';
+import 'package:club_app_frontend/fb_helper.dart';
 import 'package:flutter/material.dart';
 import '../components/Nav.dart';
 import '../components/Tag.dart';
@@ -34,8 +36,21 @@ class _ClubHomeState extends State<ClubHome> {
           margin: EdgeInsets.fromLTRB(margin, 0, margin, 0),
           child: clubDetails("assets/logo.png")),
       Text("Announcements"),
-       Attendance(club: widget.club),
-      people(),
+      Attendance(club: widget.club),
+      FutureBuilder<Widget>(
+        future: people(),
+        builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return snapshot.data!;
+            }
+          } else {
+            return CircularProgressIndicator();
+          }
+        },
+      ),
     ];
 
     void _onItemTapped(int index) {
@@ -156,17 +171,17 @@ class _ClubHomeState extends State<ClubHome> {
         ));
   }
 
-  Widget people() {
-    return Container(
-        margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-        child: Card(
-            elevation: 3,
-            child: ListTile(
-              tileColor: Colors.grey[50],
-              leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(50.0),
-                  child: Image.asset("assets/logo.png")),
-              title: Text("Ravnoor Bedi"),
-            )));
+  Future<Widget> people() async {
+    List<Widget> memberWidgets = [];
+    List memberOsis = widget.club.members;
+
+    for (int i = 0; i < memberOsis.length; i++) {
+      Map<String, dynamic> memberData = await getMemberData(memberOsis[i]);
+      Widget memberWidget =
+          personCardHorizontal( (memberData['name'] ?? "Name"), (memberData['image_url'] ?? "assets/logo.png") );
+      memberWidgets.add(memberWidget);
+    }
+    return SingleChildScrollView(
+        scrollDirection: Axis.vertical, child: Column(children: memberWidgets));
   }
 }

@@ -3,19 +3,6 @@ import '../screens/clubHome.dart';
 import '../clubModel.dart';
 
 class ClubCardHorizontal extends StatefulWidget {
-  // final String clubName;
-  // final String clubDay;
-  // final String clubAdvisor;
-  // final String clubCategory;
-  // final String clubID;
-  // const ClubCardHorizontal(
-  //     {super.key,
-  //     required this.clubName,
-  //     required this.clubDay,
-  //     required this.clubAdvisor,
-  //     required this.clubCategory,
-  //     required this.clubID});
-
   final Club club;
   const ClubCardHorizontal({super.key, required this.club});
 

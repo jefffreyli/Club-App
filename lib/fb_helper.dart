@@ -15,7 +15,8 @@ void init() async {
   getAllClubs();
 }
 
-Future<void> signIn(String emailAddress, String password, BuildContext context) async {
+Future<void> signIn(
+    String emailAddress, String password, BuildContext context) async {
   showDialog(
       context: context,
       barrierDismissible: false,
@@ -69,7 +70,6 @@ void signOut(BuildContext context) {
   FirebaseAuth.instance.signOut();
 
   navigatorKey.currentState!.popUntil((route) => route.isFirst);
-
 }
 
 Future<UserCredential> signInWithGoogle() async {
@@ -190,6 +190,7 @@ Future<void> editUserData(Map<String, dynamic> user) async {
 
 Future<void> joinClub(String clubId) async {
   final documentId = await getDocumentIdByEmail(currentUserEmail!);
+  final clubDocId = await getClubDocumentId(clubId);
 
   await db
       .collection("users")
@@ -197,12 +198,22 @@ Future<void> joinClub(String clubId) async {
       .update({
         "clubs": FieldValue.arrayUnion([clubId])
       })
-      .then((value) => print("Club added"))
-      .catchError((error) => print("Failed to update club: $error"));
+      .then((value) => print("Club added to user"))
+      .catchError((error) => print("Failed to update club for user: $error"));
+
+  await db
+      .collection("clubs")
+      .doc(clubDocId)
+      .update({
+        "members": FieldValue.arrayUnion([userData['osis']])
+      })
+      .then((value) => print("Member added to club"))
+      .catchError((error) => print("Failed to add member to club: $error"));
 }
 
 Future<void> leaveClub(String clubId) async {
   final documentId = await getDocumentIdByEmail(currentUserEmail!);
+  final clubDocId = await getClubDocumentId(clubId);
 
   await db
       .collection("users")
@@ -210,8 +221,17 @@ Future<void> leaveClub(String clubId) async {
       .update({
         "clubs": FieldValue.arrayRemove([clubId])
       })
-      .then((value) => print("Club added"))
-      .catchError((error) => print("Failed to update club: $error"));
+      .then((value) => print("Left club"))
+      .catchError((error) => print("Failed to leave club: $error"));
+  
+  await db
+      .collection("clubs")
+      .doc(clubDocId)
+      .update({
+        "members": FieldValue.arrayRemove([userData['osis']])
+      })
+      .then((value) => print("Member removed from the club"))
+      .catchError((error) => print("Failed to remove member from the club: $error"));
 }
 
 Future<void> takeAttendance(
@@ -254,4 +274,13 @@ Future<bool> presentOnDate(String date, String clubId, String osis) async {
 
   return querySnapshot.docs
       .isNotEmpty; // Return true if there are any documents in the querySnapshot, else false.
+}
+
+Future<Map<String, dynamic>> getMemberData(String osis) async {
+  final querySnapshot = await db
+      .collection("users")
+      .where("osis", isEqualTo: osis)
+      .get();
+  print("HEYYYYYYYYYYYYYYYYYYYYYYY" + querySnapshot.docs.first.data().toString());
+  return querySnapshot.docs.first.data();
 }

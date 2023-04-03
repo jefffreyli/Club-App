@@ -56,7 +56,8 @@ class _Explore extends State<Explore> {
                       advisorName: clubsInfo[i]['advisor_name'] ?? "",
                       advisorEmail: clubsInfo[i]['advisor_email'] ?? "",
                       category: clubsInfo[i]['category'] ?? "",
-                      id: clubsInfo[i]['id'].toString() ?? "",
+                      members: clubsInfo[i]['members'] ?? [],
+                      id: clubsInfo[i]['id'].toString(),
                       description: clubsInfo[i]['description'] ?? "",
                       president: clubsInfo[i]['president'] ?? "",
                       vicePresident: clubsInfo[i]['vice_president'] ?? "",
@@ -72,7 +73,8 @@ class _Explore extends State<Explore> {
                       advisorName: clubsInfo[i]['advisor_name'] ?? "",
                       advisorEmail: clubsInfo[i]['advisor_email'] ?? "",
                       category: clubsInfo[i]['category'] ?? "",
-                      id: clubsInfo[i]['id'].toString() ?? "",
+                      members: clubsInfo[i]['members'] ?? [],
+                      id: clubsInfo[i]['id'].toString(),
                       description: clubsInfo[i]['description'] ?? "",
                       president: clubsInfo[i]['president'] ?? "",
                       vicePresident: clubsInfo[i]['vice_president'] ?? "",
@@ -81,10 +83,11 @@ class _Explore extends State<Explore> {
           }
 
           var w = MediaQuery.of(context).size.width;
-          int crossAxisCount = (w / 400).ceil();
+          int crossAxisCount = (w / 450).ceil();
 
           return Expanded(
             child: GridView.count(
+              childAspectRatio: 0.75,
               crossAxisSpacing: 5,
               mainAxisSpacing: 5,
               crossAxisCount: crossAxisCount,
