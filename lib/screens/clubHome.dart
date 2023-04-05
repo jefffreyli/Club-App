@@ -3,8 +3,10 @@ import 'package:club_app_frontend/fb_helper.dart';
 import 'package:flutter/material.dart';
 import '../components/Nav.dart';
 import '../components/Tag.dart';
+import '../person.dart';
 import 'attendance.dart';
 import '../clubModel.dart';
+import '../utils.dart';
 
 class ClubHome extends StatefulWidget {
   final Club club;
@@ -34,20 +36,21 @@ class _ClubHomeState extends State<ClubHome> {
     List<Widget> widgetOptions = [
       Container(
           margin: EdgeInsets.fromLTRB(margin, 0, margin, 0),
-          child: clubDetails("assets/logo.png")),
+          child: clubDetails("assets/logo.png", context)),
       Text("Announcements"),
       Attendance(club: widget.club),
       FutureBuilder<Widget>(
-        future: people(),
+        future: people(context),
         builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {
-              return snapshot.data!;
+              return Column(
+                  children: [const SizedBox(height: 25), snapshot.data!]);
             }
           } else {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
         },
       ),
@@ -75,7 +78,9 @@ class _ClubHomeState extends State<ClubHome> {
         centerTitle: true,
       ),
       drawer: sidebar(context),
-      body: widgetOptions.elementAt(selectedIndex),
+      body: Container(
+          margin: EdgeInsets.fromLTRB(15, 15, 15, 15),
+          child: widgetOptions.elementAt(selectedIndex)),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         onTap: _onItemTapped,
@@ -94,7 +99,7 @@ class _ClubHomeState extends State<ClubHome> {
     );
   }
 
-  Widget clubDetails(String image) {
+  Widget clubDetails(String image, BuildContext context) {
     return (ListView(
       children: [
         const SizedBox(height: 60),
@@ -119,35 +124,22 @@ class _ClubHomeState extends State<ClubHome> {
         const SizedBox(height: 25),
         const Text("Leaders", style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 25),
-        Column(
-            children: List.generate(4, (index) {
-          List leaders = [
-            widget.club.president,
-            widget.club.vicePresident,
-            widget.club.secretary,
-            widget.club.advisorName
-          ];
+        leadership(context),
+        // FutureBuilder<Widget>(
+        //   future: leadership(context),
+        //   builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+        //     if (snapshot.connectionState == ConnectionState.done) {
+        //       if (snapshot.hasError) {
+        //         return Text('Error: ${snapshot.error}');
+        //       } else {
+        //         return Column(children: [snapshot.data!]);
+        //       }
+        //     } else {
+        //       return Center(child: CircularProgressIndicator());
+        //     }
+        //   },
+        // ),
 
-          List positions = [
-            "President",
-            "Vice President/Co-President",
-            "Secretary",
-            "Advisor"
-          ];
-
-          return Container(
-              margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-              child: Card(
-                  elevation: 3,
-                  child: ListTile(
-                    tileColor: Colors.grey[50],
-                    leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(50.0),
-                        child: Image.asset("assets/logo.png")),
-                    title: Text(leaders[index]),
-                    subtitle: Text(positions[index]),
-                  )));
-        })),
         const SizedBox(height: 50),
       ],
     ));
@@ -171,17 +163,69 @@ class _ClubHomeState extends State<ClubHome> {
         ));
   }
 
-  Future<Widget> people() async {
+  Future<Widget> people(BuildContext context) async {
     List<Widget> memberWidgets = [];
     List memberOsis = widget.club.members;
 
     for (int i = 0; i < memberOsis.length; i++) {
-      Map<String, dynamic> memberData = await getMemberData(memberOsis[i]);
-      Widget memberWidget =
-          personCardHorizontal( (memberData['name'] ?? "Name"), (memberData['image_url'] ?? "assets/logo.png") );
+      Map<String, dynamic> memberData = await getPersonData(memberOsis[i]);
+      Person p = Person(
+        name: (memberData['full_name'] ?? "Name"),
+        email: (memberData['email'] ?? "Email"),
+        userType: (memberData['user_type'] ?? "User Type"),
+        graduationYear: (memberData['graduation_year'] ?? "Graduation Year"),
+        aboutMe: (memberData['about_me'] ?? "About Me"),
+        imageURL: (memberData['image_url'] ?? fillerNetworkImage),
+      );
+
+      Widget memberWidget = personCardHorizontal(p, context, false);
       memberWidgets.add(memberWidget);
     }
-    return SingleChildScrollView(
-        scrollDirection: Axis.vertical, child: Column(children: memberWidgets));
+    return Container(
+      margin: EdgeInsets.only(right: 50, left: 50),
+      child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(children: memberWidgets)),
+    );
+  }
+
+Widget leadership(BuildContext context)  {
+    List<Widget> leadershipWidgets = [];
+    List leaders = [
+      widget.club.president,
+      widget.club.vicePresident,
+      widget.club.secretary,
+      widget.club.advisorName
+    ];
+
+    List positions = [
+      "President",
+      "Vice President/Co-President",
+      "Secretary",
+      "Advisor"
+    ];
+
+    for (int i = 0; i < leaders.length; i++) {
+      // Map<String, dynamic> leadershipData =
+      //     await getPersonDataByFullName(leaders[i]);
+      Person p = Person(
+        name: (leaders[i]),
+        email: ("Email"),
+        userType: ("Leadership"),
+        graduationYear:
+            ("Graduation Year"),
+        aboutMe: ("About Me"),
+        imageURL: (fillerNetworkImage),
+      );
+
+      Widget leadershipWidget = personCardHorizontal(p, context, false, positions[i]);
+      leadershipWidgets.add(leadershipWidget);
+    }
+    return Container(
+      // margin: EdgeInsets.only(right: 50, left: 50),
+      child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(children: leadershipWidgets)),
+    );
   }
 }

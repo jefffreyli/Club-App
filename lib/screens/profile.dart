@@ -4,9 +4,13 @@ import 'package:club_app_frontend/utils.dart';
 import 'package:flutter/material.dart';
 import '../fb_helper.dart';
 import 'signin.dart';
+import '../person.dart';
 
 class Profile extends StatefulWidget {
-  Profile({super.key});
+  final Person person;
+  bool editable;
+
+  Profile({super.key, required this.person, required this.editable});
 
   @override
   State<Profile> createState() => _Profile();
@@ -25,7 +29,7 @@ class _Profile extends State<Profile> {
         drawer: sidebar(context),
         floatingActionButton: Container(
             margin: EdgeInsets.only(right: 5),
-            child: FloatingActionButton(
+            child: widget.editable ? FloatingActionButton(
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -35,7 +39,7 @@ class _Profile extends State<Profile> {
               },
               child: Icon(Icons.edit),
               backgroundColor: green_1,
-            )),
+            ) : null),
         body: Container(
           margin: EdgeInsets.fromLTRB(25, 75, 25, 25),
           child: Column(children: [primary(), secondary()]),
@@ -51,16 +55,16 @@ class _Profile extends State<Profile> {
               radius: 50,
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(50.0),
-                  child: Image.network(userData['image_url'])))),
-      Text(userData['full_name'],
+                  child: Image.network(widget.person.imageURL)))),
+      Text(widget.person.name,
           style: const TextStyle(
               color: Colors.black, fontSize: 30, fontWeight: FontWeight.w500)),
       const SizedBox(height: 5),
-      Text(userData['email'],
+      Text(widget.person.email,
           style: const TextStyle(
               color: Colors.black, fontSize: 15, fontWeight: FontWeight.w400)),
       const SizedBox(height: 5),
-      Text(userData['user_type'],
+      Text(widget.person.userType,
           style: const TextStyle(
               color: Colors.black, fontSize: 15, fontWeight: FontWeight.w300)),
       const SizedBox(height: 12),
@@ -78,7 +82,7 @@ class _Profile extends State<Profile> {
           leading: const Icon(Icons.school_rounded),
           title: const Text('Gradudation Year',
               style: TextStyle(fontWeight: FontWeight.bold)),
-          subtitle: Text(userData['graduation_year']),
+          subtitle: Text(widget.person.graduationYear),
         ),
         const Divider(),
         ListTile(
@@ -87,7 +91,7 @@ class _Profile extends State<Profile> {
           leading: const Icon(Icons.person),
           title: const Text('About Me',
               style: TextStyle(fontWeight: FontWeight.bold)),
-          subtitle: Text(userData['about_me']),
+          subtitle: Text(widget.person.aboutMe),
         ),
         const Divider(),
         // buildClubsDiff()

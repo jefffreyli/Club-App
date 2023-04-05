@@ -1,9 +1,6 @@
 import 'package:club_app_frontend/screens/signup.dart';
 import 'package:flutter/material.dart';
 import '../fb_helper.dart';
-import '../main.dart';
-import 'home.dart';
-import '../utils.dart';
 
 class SignIn extends StatelessWidget {
   SignIn({super.key});
@@ -144,7 +141,6 @@ class SignIn extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.only(top: 15, bottom: 15),
         margin: EdgeInsets.only(left: 15, right: 15),
-
         decoration: BoxDecoration(
           color: Colors.black,
           borderRadius: BorderRadius.circular(8),

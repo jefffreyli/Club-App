@@ -5,18 +5,18 @@
    "version": "0.2.0",
    "configurations": [
       {
-         "name": "club_app_frontend",
+         "name": "club_app",
          "request": "launch",
          "type": "dart"
       },
       {
-         "name": "club_app_frontend (profile mode)",
+         "name": "club_app (profile mode)",
          "request": "launch",
          "type": "dart",
          "flutterMode": "profile"
       },
       {
-         "name": "club_app_frontend (release mode)",
+         "name": "club_app (release mode)",
          "request": "launch",
          "type": "dart",
          "flutterMode": "release"

@@ -1,13 +1,12 @@
 import 'package:club_app_frontend/screens/explore.dart';
 import 'package:club_app_frontend/screens/settings.dart';
-import 'package:club_app_frontend/screens/signin.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:club_app_frontend/utils.dart';
 import '../fb_helper.dart';
 import '../main.dart';
+import '../person.dart';
 import '../screens/home.dart';
 import '../screens/profile.dart';
+import '../utils.dart';
 
 Widget sidebar(BuildContext context) {
   var h = MediaQuery.of(context).size.height;
@@ -22,40 +21,53 @@ Widget sidebar(BuildContext context) {
             decoration: BoxDecoration(
               color: Colors.grey[100],
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 5),
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(
-                    '${userData['image_url']}',
-                  ),
-                ),
-                SizedBox(width: 25),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${userData['full_name']}',
-                      // 'Jeffrey Li',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
+            child: FutureBuilder<Map<String, dynamic>>(
+                future: getUserData(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<Map<String, dynamic>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error fetching user data'));
+                  }
+
+                  final userData = snapshot.data;
+
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 5),
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundImage: NetworkImage(
+                          '${userData!['image_url']}',
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      '${userData['email']}',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w300,
+                      const SizedBox(width: 25),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${userData['full_name']}',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            '${userData['email']}',
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                    ],
+                  );
+                }),
           ),
         ),
         ListTile(
@@ -75,7 +87,19 @@ Widget sidebar(BuildContext context) {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => Profile(),
+                builder: (context) => Profile(
+                    person: Person(
+                  name: (userData['full_name'] ?? "Name"),
+                  email: (userData['email'] ?? "Email"),
+                  userType: (userData['user_type'] ?? "User Type"),
+                  graduationYear:
+                      (userData['graduation_year'] ?? "Graduation Year"),
+                  aboutMe: (userData['about_me'] ?? "About Me"),
+                  imageURL: (userData['image_url'] ?? fillerNetworkImage),
+                ),
+                editable: true,
+                
+                ),
               ),
             );
           },
@@ -134,15 +158,7 @@ Widget sidebar(BuildContext context) {
             color: Colors.red[300],
           ),
           onTap: () {
-            showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) =>
-                    Center(child: CircularProgressIndicator()));
-
-            FirebaseAuth.instance.signOut();
-
-            navigatorKey.currentState!.popUntil((route) => route.isFirst);
+            signOut(context);
           },
         ),
       ],

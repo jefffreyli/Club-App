@@ -1,7 +1,9 @@
 import 'package:club_app_frontend/fb_helper.dart';
+import 'package:club_app_frontend/utils.dart';
 import 'package:flutter/material.dart';
 
 import '../components/Nav.dart';
+import '../person.dart';
 import 'profile.dart';
 
 class EditProfile extends StatefulWidget {
@@ -51,7 +53,17 @@ class _EditProfileState extends State<EditProfile> {
                   editUserData(userData);
 
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Profile(),
+                    builder: (context) => Profile(
+                        person: Person(
+                            name: userData['full_name'],
+                            email: userData['email'] ?? "Email",
+                            userType: userData['user_type'] ?? "User Type",
+                            graduationYear: userData['graduation_year'] ??
+                                "Graduation Year",
+                            aboutMe: userData['about_me'] ?? "About Me",
+                            imageURL:
+                                userData['image_url'] ?? fillerNetworkImage),
+                                editable: true),
                   ));
                 },
                 child: Text(

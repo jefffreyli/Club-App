@@ -15,3 +15,11 @@ Color grey = const Color(0xffD7DDE9);
 Color green_1 = const Color(0xff2CA63E);
 Color green_2 = const Color(0xff004F43);
 
+String fillerNetworkImage =
+    "https://i.seadn.io/gae/2hDpuTi-0AMKvoZJGd-yKWvK4tKdQr_kLIpB_qSeMau2TNGCNidAosMEvrEXFO9G6tmlFlPQplpwiqirgrIPWnCKMvElaYgI-HiVvXc?auto=format&w=1000";
+
+void navigate(BuildContext context, Widget w) {
+  Navigator.of(context).push(
+    MaterialPageRoute(builder: (context) => w),
+  );
+}

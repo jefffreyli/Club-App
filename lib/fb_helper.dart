@@ -9,7 +9,7 @@ final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
 Map<String, dynamic> userData = {};
 String userDocId = "";
 
-void init() async {
+Future<void> init() async {
   userData = await getUserData();
   userDocId = await getDocumentIdByEmail(currentUserEmail!);
   getAllClubs();
@@ -25,6 +25,7 @@ Future<void> signIn(
   try {
     final credential = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: emailAddress, password: password);
+    init();
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
       print('No user found for that email.');
@@ -35,7 +36,7 @@ Future<void> signIn(
   navigatorKey.currentState!.popUntil((route) => route.isFirst);
 }
 
-Future<void> createAccount(
+Future<void> signUp(String name, String osis, String officialClass, String year,
     String emailAddress, String password, BuildContext context) async {
   showDialog(
       context: context,
@@ -48,6 +49,9 @@ Future<void> createAccount(
       email: emailAddress,
       password: password,
     );
+    addUser(name, osis, officialClass, year, emailAddress, password);
+    init();
+
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
       print('The password provided is too weak.');
@@ -223,7 +227,7 @@ Future<void> leaveClub(String clubId) async {
       })
       .then((value) => print("Left club"))
       .catchError((error) => print("Failed to leave club: $error"));
-  
+
   await db
       .collection("clubs")
       .doc(clubDocId)
@@ -231,7 +235,8 @@ Future<void> leaveClub(String clubId) async {
         "members": FieldValue.arrayRemove([userData['osis']])
       })
       .then((value) => print("Member removed from the club"))
-      .catchError((error) => print("Failed to remove member from the club: $error"));
+      .catchError(
+          (error) => print("Failed to remove member from the club: $error"));
 }
 
 Future<void> takeAttendance(
@@ -276,11 +281,14 @@ Future<bool> presentOnDate(String date, String clubId, String osis) async {
       .isNotEmpty; // Return true if there are any documents in the querySnapshot, else false.
 }
 
-Future<Map<String, dynamic>> getMemberData(String osis) async {
-  final querySnapshot = await db
-      .collection("users")
-      .where("osis", isEqualTo: osis)
-      .get();
-  print("HEYYYYYYYYYYYYYYYYYYYYYYY" + querySnapshot.docs.first.data().toString());
+Future<Map<String, dynamic>> getPersonData(String osis) async {
+  final querySnapshot =
+      await db.collection("users").where("osis", isEqualTo: osis).get();
+  return querySnapshot.docs.first.data();
+}
+
+Future<Map<String, dynamic>> getPersonDataByFullName(String fullName) async {
+  final querySnapshot =
+      await db.collection("users").where("full_name", isEqualTo: fullName).get();
   return querySnapshot.docs.first.data();
 }
