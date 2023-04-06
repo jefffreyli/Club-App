@@ -1,8 +1,7 @@
-import 'package:club_app_frontend/screens/explore.dart';
-import 'package:club_app_frontend/screens/settings.dart';
+import '../screens/explore.dart';
+import '../screens/settings.dart';
 import 'package:flutter/material.dart';
 import '../fb_helper.dart';
-import '../main.dart';
 import '../person.dart';
 import '../screens/home.dart';
 import '../screens/profile.dart';

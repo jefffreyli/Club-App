@@ -1,4 +1,4 @@
-import 'package:club_app_frontend/utils.dart';
+import '../utils.dart';
 import 'package:flutter/material.dart';
 import '../components/Nav.dart';
 

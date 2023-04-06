@@ -1,4 +1,4 @@
-import 'package:club_app_frontend/fb_helper.dart';
+import '../fb_helper.dart';
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'signin.dart';

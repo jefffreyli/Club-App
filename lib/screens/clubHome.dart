@@ -1,5 +1,5 @@
-import 'package:club_app_frontend/components/PersonCardHorizontal.dart';
-import 'package:club_app_frontend/fb_helper.dart';
+import '../components/PersonCardHorizontal.dart';
+import '../fb_helper.dart';
 import 'package:flutter/material.dart';
 import '../components/Nav.dart';
 import '../components/Tag.dart';

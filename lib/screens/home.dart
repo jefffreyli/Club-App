@@ -1,12 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:club_app_frontend/components/ClubCardHorizontal.dart';
-import 'package:club_app_frontend/components/SectionTab.dart';
-import 'package:club_app_frontend/fb_helper.dart';
+import '../components/ClubCardHorizontal.dart';
+import '../components/SectionTab.dart';
+import '../fb_helper.dart';
 import 'package:flutter/material.dart';
 
 import '../clubModel.dart';
 import '../components/Nav.dart';
-import '../utils.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});

@@ -1,5 +1,5 @@
-import 'package:club_app_frontend/fb_helper.dart';
-import 'package:club_app_frontend/utils.dart';
+import '../fb_helper.dart';
+import '../utils.dart';
 import 'package:flutter/material.dart';
 
 import '../components/Nav.dart';
