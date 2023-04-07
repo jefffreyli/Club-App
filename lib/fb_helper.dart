@@ -292,3 +292,33 @@ Future<Map<String, dynamic>> getPersonDataByFullName(String fullName) async {
       await db.collection("users").where("full_name", isEqualTo: fullName).get();
   return querySnapshot.docs.first.data();
 }
+
+// posts
+Future<Stream<List<Map>>> getClubPosts(String clubId) async {
+  final clubDocId = await getClubDocumentId(clubId);
+  return db
+      .collection("clubs")
+      .doc(clubDocId)
+      .collection("posts")
+      .snapshots()
+      .map((querySnapshot) =>
+          querySnapshot.docs.map((doc) => doc.data()).toList());
+}
+
+
+Future<void> addPost(
+    List<String> osis, String date, String clubID) async {
+  final clubDocId = await getClubDocumentId(clubID);
+  // print("clubId: $clubID");
+  // print("clubDocId: $clubDocId");
+  // print("documentId: $documentId");
+
+  for (int i = 0; i < osis.length; i++) {
+    await db
+        .collection("clubs")
+        .doc(clubDocId)
+        .collection("attendance")
+        .doc()
+        .set({"osis": "${osis[i]}", "date": '$date'});
+  }
+}

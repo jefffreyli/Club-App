@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'screens/signin.dart';
@@ -25,7 +25,11 @@ class MyApp extends StatelessWidget {
       // darkTheme: ThemeData.dark(),
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primaryColor: Colors.grey[100]),
+      theme: ThemeData(
+          primaryColor: Colors.grey[100],
+          textTheme: GoogleFonts.openSansTextTheme(
+            Theme.of(context).textTheme,
+          )),
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {

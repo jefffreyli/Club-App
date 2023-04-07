@@ -1,3 +1,5 @@
+import 'package:club_app/utils.dart';
+
 import '../clubModel.dart';
 import 'package:flutter/material.dart';
 import '../fb_helper.dart';
@@ -48,7 +50,7 @@ class _ClubCardSquareState extends State<ClubCardSquare> {
         child: Padding(
           padding: EdgeInsets.all(20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+              // crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 CircleAvatar(
@@ -63,12 +65,17 @@ class _ClubCardSquareState extends State<ClubCardSquare> {
                   overflow: TextOverflow.visible,
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Column(
                   children: [
-                    tag(widget.club.day),
-                    tag(widget.club.category),
-                    // tag(widget.club.id),
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      tag(widget.club.day, Colors.blue[800]!,
+                          Colors.blue[50]!),
+                      const SizedBox(width: 10),
+                      tag(widget.club.category, yellowOrangeDark, yellowOrange)
+                    ]),
+                    const SizedBox(height: 10),
+                    tag(widget.club.location, Colors.red[800]!,
+                        Colors.red[50]!),
                   ],
                 ),
 

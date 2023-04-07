@@ -1,10 +1,12 @@
 import '../components/ClubCardHorizontal.dart';
+import '../components/Posts.dart';
 import '../components/SectionTab.dart';
 import '../fb_helper.dart';
 import 'package:flutter/material.dart';
 
 import '../clubModel.dart';
 import '../components/Nav.dart';
+import '../components/Posts.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -26,40 +28,43 @@ class _HomeState extends State<Home> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                   const SizedBox(height: 30),
-                  // const Text("Club Categories",
-                  //     textAlign: TextAlign.left,
-                  //     style: TextStyle(
-                  //       fontWeight: FontWeight.bold,
-                  //       fontSize: 30,
-                  //     )),
-                  // const SizedBox(height: 25),
-                  // sectionTabs(),
-
-                  // const SizedBox(height: 75),
 
                   //my clubs
                   const Text("My Clubs",
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w900,
                         fontSize: 30,
                       )),
                   const SizedBox(height: 25),
                   myClubs(context),
 
-                  const SizedBox(height: 75),
+                  const SizedBox(height: 50),
+
+                  //posts
+                  const Text("Posts",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 30,
+                      )),
+                  const SizedBox(height: 25),
+                  upcomingEvent("Club Name", "April 12, 2023 - 10:00 AM", "331",
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in massa id sapien finibus congue sed vel nulla. Sed ac magna sed lacus aliquam pulvinar vitae sit amet purus. Vestibulum lobortis massa nec sapien eleifend efficitur. Nullam pellentesque tincidunt orci, eu facilisis dolor dignissim nec. Proin vel mi a sapien bibendum lobortis eget eu eros. In hac habitasse platea dictumst. Sed blandit in tellus et blandit.', "April 10, 2023 - 9:34 AM"),
+                  announcement("Club Name", "Materials", "Here are the materials from today. Look over them and get ready for next week. As always, email our instructors with any questions!", "April 10, 2023 - 9:34 AM"),
+                  const SizedBox(height: 100),
                 ])))));
   }
 
-  Widget sectionTabs() {
-    List<Widget> tabs = [];
+  // Widget sectionTabs() {
+  //   List<Widget> tabs = [];
 
-    for (int i = 0; i < 10; i++) {
-      tabs.add(SectionTab(tabIcon: 'assets/logo.png', tabName: "Tab $i"));
-    }
-    return (SingleChildScrollView(
-        scrollDirection: Axis.horizontal, child: Row(children: tabs)));
-  }
+  //   for (int i = 0; i < 10; i++) {
+  //     tabs.add(SectionTab(tabIcon: 'assets/logo.png', tabName: "Tab $i"));
+  //   }
+  //   return (SingleChildScrollView(
+  //       scrollDirection: Axis.horizontal, child: Row(children: tabs)));
+  // }
 
   Widget myClubs(BuildContext context) {
     return StreamBuilder<List<Map>>(
@@ -70,7 +75,7 @@ class _HomeState extends State<Home> {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child:CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           }
 
           List<Map> clubsInfo = snapshot.data!;
@@ -78,7 +83,7 @@ class _HomeState extends State<Home> {
           List myClubIds = userData['clubs'];
 
           for (int i = 0; i < clubsInfo.length; i++) {
-            if (myClubIds.contains( (clubsInfo[i]["id"].toString() ?? ""))) {
+            if (myClubIds.contains((clubsInfo[i]["id"].toString() ?? ""))) {
               myClubWidgets.add(ClubCardHorizontal(
                   club: Club(
                       name: clubsInfo[i]['name'] ?? "",
@@ -91,7 +96,8 @@ class _HomeState extends State<Home> {
                       description: clubsInfo[i]['description'] ?? "",
                       president: clubsInfo[i]['president'] ?? "",
                       vicePresident: clubsInfo[i]['vice_president'] ?? "",
-                      secretary: clubsInfo[i]['secretary'] ?? "")));
+                      secretary: clubsInfo[i]['secretary'] ?? "",
+                      location: (clubsInfo[i]['location']).toString() ?? "")));
             }
           }
           return (Column(children: myClubWidgets));

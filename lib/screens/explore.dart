@@ -22,21 +22,25 @@ class _Explore extends State<Explore> {
     w = MediaQuery.of(context).size.width;
 
     return Scaffold(
-        appBar: nav("Explore"),
-        drawer: sidebar(context),
-        body: SafeArea(
-            child: Container(
-                margin: EdgeInsets.only(left: 15, right: 15),
-                child: Column(
-                  children: [
-                    SizedBox(height: 10),
-                    searchClub(),
-                    SizedBox(height: 10),
-                    allTabs(),
-                    SizedBox(height: 10),
-                    allClubs(context, searchController.text),
-                  ],
-                ))));
+      appBar: nav("Explore"),
+      drawer: sidebar(context),
+      body: SafeArea(
+        child: Container(
+          margin: EdgeInsets.only(left: 15, right: 15),
+          child: Column(
+            children: [
+              SizedBox(height: 10),
+              searchClub(),
+              SizedBox(height: 10),
+              allTabs(),
+              SizedBox(height: 10),
+              allClubs(context, searchController.text),
+              SizedBox(height: 25),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget allClubs(BuildContext context, String searched) {
@@ -61,7 +65,8 @@ class _Explore extends State<Explore> {
                       description: clubsInfo[i]['description'] ?? "",
                       president: clubsInfo[i]['president'] ?? "",
                       vicePresident: clubsInfo[i]['vice_president'] ?? "",
-                      secretary: clubsInfo[i]['secretary'] ?? "")));
+                      secretary: clubsInfo[i]['secretary'] ?? "",
+                      location: (clubsInfo[i]['location']).toString() ?? "")));
               continue;
             }
 
@@ -78,7 +83,8 @@ class _Explore extends State<Explore> {
                       description: clubsInfo[i]['description'] ?? "",
                       president: clubsInfo[i]['president'] ?? "",
                       vicePresident: clubsInfo[i]['vice_president'] ?? "",
-                      secretary: clubsInfo[i]['secretary'] ?? "")));
+                      secretary: clubsInfo[i]['secretary'] ?? "",
+                      location: (clubsInfo[i]['location']).toString() ?? "")));
             }
           }
 
@@ -155,7 +161,7 @@ class _Explore extends State<Explore> {
               },
               child: Text(
                 "${categories[i]}",
-                style: TextStyle(fontSize: w * 0.012, color: Colors.grey[600]),
+                style: TextStyle(fontSize: 13, color: Colors.grey[600]),
               ))));
     }
     return (SingleChildScrollView(

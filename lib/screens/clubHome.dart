@@ -1,4 +1,5 @@
 import '../components/PersonCardHorizontal.dart';
+import '../components/Posts.dart';
 import '../fb_helper.dart';
 import 'package:flutter/material.dart';
 import '../components/Nav.dart';
@@ -19,13 +20,13 @@ class ClubHome extends StatefulWidget {
 class _ClubHomeState extends State<ClubHome> {
   var w, h;
   int selectedIndex = 0;
+  double margin = 0;
 
   @override
   Widget build(BuildContext context) {
     w = MediaQuery.of(context).size.width;
     h = MediaQuery.of(context).size.height;
 
-    double margin = 0;
     if (w < 600)
       margin = 15;
     else if (w < 900)
@@ -34,10 +35,14 @@ class _ClubHomeState extends State<ClubHome> {
       margin = 75;
 
     List<Widget> widgetOptions = [
-      Container(
-          margin: EdgeInsets.fromLTRB(margin, 0, margin, 0),
-          child: clubDetails("assets/logo.png", context)),
-      Text("Announcements"),
+      clubDetails("assets/logo.png", context),
+      Scaffold(
+        body: clubPosts(widget.club.name, widget.club.id, context),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add_box_rounded),
+          onPressed: () {},
+        ),
+      ),
       Attendance(club: widget.club),
       FutureBuilder<Widget>(
         future: people(context),
@@ -90,7 +95,7 @@ class _ClubHomeState extends State<ClubHome> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.announcement), label: "Announcements"),
+              icon: Icon(Icons.announcement), label: "Posts"),
           BottomNavigationBarItem(
               icon: Icon(Icons.calendar_month), label: "Attendance"),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: "People")
@@ -100,49 +105,55 @@ class _ClubHomeState extends State<ClubHome> {
   }
 
   Widget clubDetails(String image, BuildContext context) {
-    return (ListView(
-      children: [
-        const SizedBox(height: 60),
-        Center(
-            child: CircleAvatar(
-          radius: h * 0.12,
-          backgroundImage: AssetImage("assets/logo.png"),
-        )),
-        const SizedBox(height: 50),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            tag(widget.club.day),
-            tag(widget.club.category),
-            tag(widget.club.id),
-          ],
-        ),
-        const SizedBox(height: 50),
-        const Text("Overview", style: TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 25),
-        Text(widget.club.description),
-        const SizedBox(height: 25),
-        const Text("Leaders", style: TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 25),
-        leadership(context),
-        // FutureBuilder<Widget>(
-        //   future: leadership(context),
-        //   builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-        //     if (snapshot.connectionState == ConnectionState.done) {
-        //       if (snapshot.hasError) {
-        //         return Text('Error: ${snapshot.error}');
-        //       } else {
-        //         return Column(children: [snapshot.data!]);
-        //       }
-        //     } else {
-        //       return Center(child: CircularProgressIndicator());
-        //     }
-        //   },
-        // ),
+    return (SingleChildScrollView(
+        child: Container(
+      margin: EdgeInsets.only(left: margin, right: margin),
+      child: Column(
+        children: [
+          const SizedBox(height: 60),
+          Center(
+              child: CircleAvatar(
+            radius: h * 0.12,
+            backgroundImage: AssetImage("assets/logo.png"),
+          )),
+          const SizedBox(height: 50),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              tag(widget.club.day, Colors.blue[800]!, Colors.blue[50]!),
+              const SizedBox(width: 10),
+              tag(widget.club.category, yellowOrangeDark, yellowOrange),
+              const SizedBox(width: 10),
+              tag(widget.club.location, Colors.red[800]!, Colors.red[50]!),
+            ],
+          ),
+          const SizedBox(height: 50),
+          const Text("Overview", style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 25),
+          Text(widget.club.description),
+          const SizedBox(height: 25),
+          const Text("Leaders", style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 25),
+          leadership(context),
+          // FutureBuilder<Widget>(
+          //   future: leadership(context),
+          //   builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+          //     if (snapshot.connectionState == ConnectionState.done) {
+          //       if (snapshot.hasError) {
+          //         return Text('Error: ${snapshot.error}');
+          //       } else {
+          //         return Column(children: [snapshot.data!]);
+          //       }
+          //     } else {
+          //       return Center(child: CircularProgressIndicator());
+          //     }
+          //   },
+          // ),
 
-        const SizedBox(height: 50),
-      ],
-    ));
+          const SizedBox(height: 50),
+        ],
+      ),
+    )));
   }
 
   Widget attendance(BuildContext context) {
@@ -189,7 +200,7 @@ class _ClubHomeState extends State<ClubHome> {
     );
   }
 
-Widget leadership(BuildContext context)  {
+  Widget leadership(BuildContext context) {
     List<Widget> leadershipWidgets = [];
     List leaders = [
       widget.club.president,
@@ -212,13 +223,13 @@ Widget leadership(BuildContext context)  {
         name: (leaders[i]),
         email: ("Email"),
         userType: ("Leadership"),
-        graduationYear:
-            ("Graduation Year"),
+        graduationYear: ("Graduation Year"),
         aboutMe: ("About Me"),
         imageURL: (fillerNetworkImage),
       );
 
-      Widget leadershipWidget = personCardHorizontal(p, context, false, positions[i]);
+      Widget leadershipWidget =
+          personCardHorizontal(p, context, false, positions[i]);
       leadershipWidgets.add(leadershipWidget);
     }
     return Container(

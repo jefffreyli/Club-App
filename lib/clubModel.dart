@@ -10,6 +10,7 @@ class Club {
   late String president;
   late String vicePresident;
   late String secretary;
+  late String location;
 
   Club(
       {required this.name,
@@ -22,5 +23,6 @@ class Club {
       required this.description,
       required this.president,
       required this.vicePresident,
-      required this.secretary});
+      required this.secretary,
+      required this.location});
 }

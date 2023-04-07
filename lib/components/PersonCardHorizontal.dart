@@ -16,9 +16,9 @@ Widget personCardHorizontal(Person person, BuildContext context, bool editable,
       margin: EdgeInsets.only(bottom: 3),
       child: Card(
           color: Colors.grey[50],
-          elevation: 3,
+          elevation: 1.5,
           child: Padding(
-            padding: EdgeInsets.all(5),
+            padding: EdgeInsets.fromLTRB(8, 12, 8, 12),
             child: ListTile(
               tileColor: Colors.grey[50],
               leading: CircleAvatar(
