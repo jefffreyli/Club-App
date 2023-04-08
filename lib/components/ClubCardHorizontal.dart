@@ -25,12 +25,12 @@ class _ClubCardHorizontalState extends State<ClubCardHorizontal> {
         child: Container(
             margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Card(
-              color: Colors.grey[50],
+              // color: Colors.grey[50],
                 elevation: 1.5,
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(8, 12, 8, 12),
                   child: ListTile(
-                    tileColor: Colors.grey[50],
+                    // tileColor: Colors.grey[50],
                     leading: ClipRRect(
                         borderRadius: BorderRadius.circular(50.0),
                         child: Image.asset("assets/logo.png")),

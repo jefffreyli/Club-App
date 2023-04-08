@@ -8,6 +8,7 @@ import '../person.dart';
 import 'attendance.dart';
 import '../clubModel.dart';
 import '../utils.dart';
+import 'posts.dart';
 
 class ClubHome extends StatefulWidget {
   final Club club;
@@ -36,13 +37,7 @@ class _ClubHomeState extends State<ClubHome> {
 
     List<Widget> widgetOptions = [
       clubDetails("assets/logo.png", context),
-      Scaffold(
-        body: clubPosts(widget.club.name, widget.club.id, context),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add_box_rounded),
-          onPressed: () {},
-        ),
-      ),
+      Posts(club: widget.club),
       Attendance(club: widget.club),
       FutureBuilder<Widget>(
         future: people(context),
@@ -193,7 +188,7 @@ class _ClubHomeState extends State<ClubHome> {
       memberWidgets.add(memberWidget);
     }
     return Container(
-      margin: EdgeInsets.only(right: 50, left: 50),
+      margin: EdgeInsets.only(right: 30, left: 30),
       child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(children: memberWidgets)),

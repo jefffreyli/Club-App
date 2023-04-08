@@ -51,7 +51,6 @@ Future<void> signUp(String name, String osis, String officialClass, String year,
     );
     addUser(name, osis, officialClass, year, emailAddress, password);
     init();
-
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
       print('The password provided is too weak.');
@@ -288,8 +287,10 @@ Future<Map<String, dynamic>> getPersonData(String osis) async {
 }
 
 Future<Map<String, dynamic>> getPersonDataByFullName(String fullName) async {
-  final querySnapshot =
-      await db.collection("users").where("full_name", isEqualTo: fullName).get();
+  final querySnapshot = await db
+      .collection("users")
+      .where("full_name", isEqualTo: fullName)
+      .get();
   return querySnapshot.docs.first.data();
 }
 
@@ -305,20 +306,25 @@ Future<Stream<List<Map>>> getClubPosts(String clubId) async {
           querySnapshot.docs.map((doc) => doc.data()).toList());
 }
 
-
-Future<void> addPost(
-    List<String> osis, String date, String clubID) async {
+Future<void> addGeneralPost(String subject, String body, String clubID) async {
   final clubDocId = await getClubDocumentId(clubID);
-  // print("clubId: $clubID");
-  // print("clubDocId: $clubDocId");
-  // print("documentId: $documentId");
 
-  for (int i = 0; i < osis.length; i++) {
-    await db
-        .collection("clubs")
-        .doc(clubDocId)
-        .collection("attendance")
-        .doc()
-        .set({"osis": "${osis[i]}", "date": '$date'});
-  }
+  await db
+      .collection("clubs")
+      .doc(clubDocId)
+      .collection("posts")
+      .doc()
+      .set({"subject": subject, "body": body});
+}
+
+Future<void> addMeetingPost(String subject, String body, String dateTime,
+    String location, String clubID) async {
+  final clubDocId = await getClubDocumentId(clubID);
+
+  await db
+      .collection("clubs")
+      .doc(clubDocId)
+      .collection("posts")
+      .doc()
+      .set({"subject": subject, "body": body, "location": location});
 }

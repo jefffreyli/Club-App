@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primaryColor: Colors.grey[100],
-          textTheme: GoogleFonts.openSansTextTheme(
+          textTheme: GoogleFonts.nunitoSansTextTheme(
             Theme.of(context).textTheme,
           )),
       home: StreamBuilder<User?>(
