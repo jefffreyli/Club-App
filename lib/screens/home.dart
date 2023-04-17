@@ -49,9 +49,18 @@ class _HomeState extends State<Home> {
                         fontSize: 30,
                       )),
                   const SizedBox(height: 25),
-                  upcomingEvent("Club Name", "April 12, 2023 - 10:00 AM", "331",
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in massa id sapien finibus congue sed vel nulla. Sed ac magna sed lacus aliquam pulvinar vitae sit amet purus. Vestibulum lobortis massa nec sapien eleifend efficitur. Nullam pellentesque tincidunt orci, eu facilisis dolor dignissim nec. Proin vel mi a sapien bibendum lobortis eget eu eros. In hac habitasse platea dictumst. Sed blandit in tellus et blandit.', "April 10, 2023 - 9:34 AM"),
-                  announcement("Club Name", "Materials", "Here are the materials from today. Look over them and get ready for next week. As always, email our instructors with any questions!", "April 10, 2023 - 9:34 AM"),
+                  recentPosts(context),
+                  upcomingMeeting(
+                      "Club Name",
+                      "April 12, 2023 - 10:00 AM",
+                      "331",
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in massa id sapien finibus congue sed vel nulla. Sed ac magna sed lacus aliquam pulvinar vitae sit amet purus. Vestibulum lobortis massa nec sapien eleifend efficitur. Nullam pellentesque tincidunt orci, eu facilisis dolor dignissim nec. Proin vel mi a sapien bibendum lobortis eget eu eros. In hac habitasse platea dictumst. Sed blandit in tellus et blandit.',
+                      "April 10, 2023 - 9:34 AM"),
+                  announcement(
+                      "Club Name",
+                      "Materials",
+                      "Here are the materials from today. Look over them and get ready for next week. As always, email our instructors with any questions!",
+                      "April 10, 2023 - 9:34 AM"),
                   const SizedBox(height: 100),
                 ])))));
   }
@@ -102,5 +111,65 @@ class _HomeState extends State<Home> {
           }
           return (Column(children: myClubWidgets));
         });
+  }
+
+  Widget recentPosts(BuildContext context) {
+    return FutureBuilder<Stream<List<Map<String, dynamic>>>>(
+      future: getRecentPosts(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('${snapshot.error}');
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        return StreamBuilder<List<Map<String, dynamic>>>(
+          stream: snapshot.data!,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text('${snapshot.error}');
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+
+            List<Map<String, dynamic>> postsInfo = snapshot.data!;
+            List<Widget> postWidgets = [];
+
+            for (int i = 0; i < postsInfo.length; i++) {
+              if (postsInfo[i]['type'] == "General") {
+                postWidgets.add(
+                  announcement(
+                    postsInfo[i]['name'] ?? "",
+                    postsInfo[i]['subject'],
+                    postsInfo[i]['body'],
+                    postsInfo[i]['date_time_posted'].toDate(),
+                  ),
+                );
+              }
+              if (postsInfo[i]['type'] == "Meeting") {
+                postWidgets.add(
+                  upcomingMeeting(
+                    postsInfo[i]['name'] ?? "",
+                    postsInfo[i]['meeting_date_time'].toDate(),
+                    postsInfo[i]['location'],
+                    postsInfo[i]['body'],
+                    postsInfo[i]['date_time_posted'].toDate(),
+                  ),
+                );
+              }
+            }
+
+            return SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(children: postWidgets),
+            );
+          },
+        );
+      },
+    );
   }
 }

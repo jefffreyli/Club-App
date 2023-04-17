@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../clubModel.dart';
 import '../components/Posts.dart';
 import '../fb_helper.dart';
+import '../utils.dart';
 
 var h;
 
@@ -27,15 +28,7 @@ class _PostsState extends State<Posts> {
         backgroundColor: Colors.green[700],
         child: const Icon(Icons.add_box_rounded),
         onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              String subject = '';
-              String body = '';
-
-              return PostDialog();
-            },
-          );
+          navigate(context, EditPost(club: widget.club));
         },
       ),
     );
@@ -73,7 +66,7 @@ class _PostsState extends State<Posts> {
                     postsInfo[i]['body'], postsInfo[i]['date_time_posted']));
               }
               if (postsInfo[i]['type'] == "Meeting") {
-                postWidgets.add(upcomingEvent(
+                postWidgets.add(upcomingMeeting(
                     clubName,
                     postsInfo[i]['date_time_meeting'],
                     postsInfo[i]['location'],
@@ -92,33 +85,42 @@ class _PostsState extends State<Posts> {
   }
 }
 
-class PostDialog extends StatefulWidget {
+class EditPost extends StatefulWidget {
+  final Club club;
+  const EditPost({super.key, required this.club});
+
   @override
-  _PostDialogState createState() => _PostDialogState();
+  _EditPostState createState() => _EditPostState();
 }
 
-class _PostDialogState extends State<PostDialog> {
+class _EditPostState extends State<EditPost> {
   int _modeIndex = 0; // 0 for General mode, 1 for Meeting mode
 
-  final _bodyController = TextEditingController();
-  String subject = '';
-  String body = '';
+  final _body1Controller = TextEditingController();
+  final _body2Controller = TextEditingController();
+  String subject1 = '';
+  // String body1 = '';
+  String subject2 = '';
+  // String body2 = '';
+  String meetingDate = "";
+  String meetingTime = "";
+  String location = "";
 
   List<Widget> _buildModeContent() {
     switch (_modeIndex) {
       case 0:
         return [
-          TextField(
-            decoration: InputDecoration(hintText: 'Subject'),
-            onChanged: (value) {
-              subject = value;
-            },
-          ),
-          SizedBox(height: 15),
+          TextFormField(
+              decoration: InputDecoration(hintText: 'Meeting Subject'),
+              onChanged: (value) {
+                subject1 = value;
+              },
+            ),
+          const SizedBox(height: 15),
           TextField(
             cursorColor: Colors.grey[600],
             maxLines: (h / 45).ceil(),
-            controller: _bodyController,
+            controller: _body1Controller,
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.grey.shade400),
@@ -129,24 +131,61 @@ class _PostDialogState extends State<PostDialog> {
               filled: true,
               fillColor: Colors.white,
               hoverColor: Colors.grey[50],
-              hintText: "Body",
+              hintText: "Body Text",
               hintStyle: TextStyle(color: Colors.grey[500]),
             ),
           ),
         ];
       case 1:
         return [
-          TextField(
-            decoration: InputDecoration(hintText: 'Meeting Subject'),
-            onChanged: (value) {
-              subject = value;
-            },
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  decoration: InputDecoration(hintText: 'Meeting Subject'),
+                  onChanged: (value) {
+                    subject2 = value;
+                  },
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                      hintText: '01/01/2023', icon: Icon(Icons.calendar_month)),
+                  onChanged: (value) {
+                    meetingDate = value;
+                  },
+                ),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                      hintText: '3:45 PM', icon: Icon(Icons.watch_later)),
+                  onChanged: (value) {
+                    meetingTime = value;
+                  },
+                ),
+              ),
+              SizedBox(width: 8),
+              Expanded(
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                      hintText: 'Meeting Location',
+                      icon: Icon(Icons.location_city)),
+                  onChanged: (value) {
+                    location = value;
+                  },
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 16),
+          SizedBox(height: 15),
           TextField(
             cursorColor: Colors.grey[600],
             maxLines: (h / 45).ceil(),
-            controller: _bodyController,
+            controller: _body2Controller,
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.grey.shade400),
@@ -157,7 +196,7 @@ class _PostDialogState extends State<PostDialog> {
               filled: true,
               fillColor: Colors.white,
               hoverColor: Colors.grey[50],
-              hintText: "Meeting Notes",
+              hintText: "Body Text",
               hintStyle: TextStyle(color: Colors.grey[500]),
             ),
           ),
@@ -224,9 +263,11 @@ class _PostDialogState extends State<PostDialog> {
         TextButton(
           child: Text('Post'),
           onPressed: () {
-            // Do something with subject and body
-            print('Subject: $subject, Body: $body');
             Navigator.of(context).pop();
+            _modeIndex == 0
+                ? addGeneralPost(subject1, _body1Controller.text, widget.club.id)
+                : addMeetingPost(subject2, _body2Controller.text, meetingDate, meetingTime,
+                    location, widget.club.id);
           },
         ),
       ],

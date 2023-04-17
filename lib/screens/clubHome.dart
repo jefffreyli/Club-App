@@ -104,6 +104,7 @@ class _ClubHomeState extends State<ClubHome> {
         child: Container(
       margin: EdgeInsets.only(left: margin, right: margin),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 60),
           Center(

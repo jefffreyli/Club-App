@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import '../main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -194,6 +195,7 @@ Future<void> editUserData(Map<String, dynamic> user) async {
 Future<void> joinClub(String clubId) async {
   final documentId = await getDocumentIdByEmail(currentUserEmail!);
   final clubDocId = await getClubDocumentId(clubId);
+  
 
   await db
       .collection("users")
@@ -241,9 +243,6 @@ Future<void> leaveClub(String clubId) async {
 Future<void> takeAttendance(
     List<String> osis, String date, String clubID) async {
   final clubDocId = await getClubDocumentId(clubID);
-  // print("clubId: $clubID");
-  // print("clubDocId: $clubDocId");
-  // print("documentId: $documentId");
 
   for (int i = 0; i < osis.length; i++) {
     await db
@@ -252,6 +251,16 @@ Future<void> takeAttendance(
         .collection("attendance")
         .doc()
         .set({"osis": "${osis[i]}", "date": '$date'});
+  }
+}
+
+Future<String> getClubNameById(String id) async {
+  final snapshot =
+      await db.collection('clubs').where('id', isEqualTo: int.parse(id)).get();
+  if (snapshot.docs.isNotEmpty) {
+    return snapshot.docs.first.data()['name'];
+  } else {
+    return "Couldn't find club";
   }
 }
 
@@ -308,23 +317,66 @@ Future<Stream<List<Map>>> getClubPosts(String clubId) async {
 
 Future<void> addGeneralPost(String subject, String body, String clubID) async {
   final clubDocId = await getClubDocumentId(clubID);
+  DateTime curr = DateTime.now();
+  String formattedDate = DateFormat('MM-dd-yyyy HH:mm').format(curr);
 
-  await db
-      .collection("clubs")
-      .doc(clubDocId)
-      .collection("posts")
-      .doc()
-      .set({"subject": subject, "body": body});
+  await db.collection("clubs").doc(clubDocId).collection("posts").doc().set({
+    "subject": subject,
+    "body": body,
+    "type": "General",
+    "date_time_posted": formattedDate
+  });
 }
 
-Future<void> addMeetingPost(String subject, String body, String dateTime,
-    String location, String clubID) async {
+Future<void> addMeetingPost(String subject, String body, String date,
+    String time, String location, String clubID) async {
   final clubDocId = await getClubDocumentId(clubID);
+  DateTime curr = DateTime.now();
+  String formattedDate = DateFormat('MM-dd-yyyy HH:mm').format(curr);
 
-  await db
-      .collection("clubs")
-      .doc(clubDocId)
-      .collection("posts")
-      .doc()
-      .set({"subject": subject, "body": body, "location": location});
+  await db.collection("clubs").doc(clubDocId).collection("posts").doc().set({
+    "subject": subject,
+    "body": body,
+    "location": location,
+    "type": "Meeting",
+    "date_time_meeting": date + " - " + time,
+    "date_time_posted": formattedDate
+  });
+}
+
+Future<Stream<List<Map<String, dynamic>>>> getRecentPosts() async {
+  List myClubIds = userData['clubs'];
+  List<Stream<List<Map<String, dynamic>>>> recentPosts = [];
+
+  // Compute the cutoff date as the current date/time plus three days
+  DateTime now = DateTime.now();
+  DateTime cutoffDate = now.add(Duration(days: 3));
+
+  for (int i = 0; i < myClubIds.length; i++) {
+    final clubDocId = await getClubDocumentId(myClubIds[i]);
+    final clubName = await getClubNameById(clubDocId);
+
+    Stream<List<Map<String, dynamic>>> clubPosts = db
+        .collection("clubs")
+        .doc(clubDocId)
+        .collection("posts")
+        .where("date_time_meeting", isGreaterThan: now)
+        .where("date_time_posted", isLessThan: cutoffDate)
+        .snapshots()
+        .map((querySnapshot) =>
+            querySnapshot.docs.map((doc) => doc.data()).toList());
+    recentPosts.add(clubPosts);
+  }
+
+  // Convert the list of dynamic maps to a list of maps with explicit type
+  List<Map<String, dynamic>> recentPostsList = [];
+  await Future.forEach(recentPosts,
+      (Stream<List<Map<String, dynamic>>> stream) async {
+    await for (var postList in stream) {
+      recentPostsList.addAll(postList);
+    }
+  });
+
+  // Convert the list to a stream and return it
+  return Stream.value(recentPostsList);
 }

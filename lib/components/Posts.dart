@@ -20,7 +20,7 @@ Widget announcement(
             subject,
             style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 15),
           Text(
             body,
             style: TextStyle(fontSize: 14, color: Colors.grey[600]),
@@ -29,7 +29,7 @@ Widget announcement(
           Align(
             alignment: Alignment.bottomRight,
             child: Text(
-              dateTimePosted,
+              "Posted " + dateTimePosted,
               style: TextStyle(
                   fontStyle: FontStyle.italic,
                   fontSize: 12,
@@ -42,7 +42,7 @@ Widget announcement(
   );
 }
 
-Widget upcomingEvent(String clubName, String dateTime, String location,
+Widget upcomingMeeting(String clubName, String dateTime, String location,
     String description, String dateTimePosted) {
   return Card(
     elevation: 2,
@@ -88,7 +88,7 @@ Widget upcomingEvent(String clubName, String dateTime, String location,
           const Divider(height: 15),
           const SizedBox(height: 10),
           const Text(
-            'Event Description',
+            'Meeting Description',
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 10),
@@ -100,7 +100,7 @@ Widget upcomingEvent(String clubName, String dateTime, String location,
           Align(
             alignment: Alignment.bottomRight,
             child: Text(
-              dateTimePosted,
+              "Posted " + dateTimePosted,
               style: TextStyle(
                   fontStyle: FontStyle.italic,
                   fontSize: 12,

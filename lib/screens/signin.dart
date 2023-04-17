@@ -96,6 +96,7 @@ class SignIn extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: TextField(
+        cursorColor: Colors.black,
         autocorrect: false,
         enableSuggestions: false,
         keyboardType: TextInputType.emailAddress,

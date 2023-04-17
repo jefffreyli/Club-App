@@ -16,9 +16,6 @@ class Attendance extends StatefulWidget {
 var w, h;
 
 class _AttendanceState extends State<Attendance> {
-  // DateTime _focusedDay = DateTime.now();
-  // DateTime? _selectedDay;
-  // Map clubsMap = userData['clubs'];
   TextEditingController attendanceController = TextEditingController();
 
   @override
@@ -39,7 +36,7 @@ class _AttendanceState extends State<Attendance> {
                 );
               },
               child: Icon(Icons.calendar_today),
-              backgroundColor: Colors.green,
+              backgroundColor: Colors.green[700],
             )
           : null,
       body: Container(
@@ -49,7 +46,7 @@ class _AttendanceState extends State<Attendance> {
             const SizedBox(height: 25),
             TableCalendar(
               headerStyle: HeaderStyle(
-                titleTextStyle: TextStyle(color: Colors.black),
+                titleTextStyle: const TextStyle(color: Colors.black),
                 formatButtonDecoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                 ),
