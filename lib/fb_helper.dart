@@ -4,11 +4,13 @@ import '../main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 var db = FirebaseFirestore.instance;
 final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
 Map<String, dynamic> userData = {};
 String userDocId = "";
+List userClubs = userData['clubs'];
 
 Future<void> init() async {
   userData = await getUserData();
@@ -195,7 +197,6 @@ Future<void> editUserData(Map<String, dynamic> user) async {
 Future<void> joinClub(String clubId) async {
   final documentId = await getDocumentIdByEmail(currentUserEmail!);
   final clubDocId = await getClubDocumentId(clubId);
-  
 
   await db
       .collection("users")
@@ -344,39 +345,69 @@ Future<void> addMeetingPost(String subject, String body, String date,
   });
 }
 
-Future<Stream<List<Map<String, dynamic>>>> getRecentPosts() async {
-  List myClubIds = userData['clubs'];
-  List<Stream<List<Map<String, dynamic>>>> recentPosts = [];
-
-  // Compute the cutoff date as the current date/time plus three days
+Future<Stream<List<List<Map>>>> getRecentPosts() async {
   DateTime now = DateTime.now();
-  DateTime cutoffDate = now.add(Duration(days: 3));
+  DateTime cutOffDate = now.add(Duration(days: 5));
+  String formattedCutOffDate =
+      DateFormat('MM-dd-yyyy HH:mm').format(cutOffDate);
 
-  for (int i = 0; i < myClubIds.length; i++) {
-    final clubDocId = await getClubDocumentId(myClubIds[i]);
-    final clubName = await getClubNameById(clubDocId);
-
-    Stream<List<Map<String, dynamic>>> clubPosts = db
+  List<Stream<List<Map>>> postsInfo = [];
+  for (int i = 0; i < userClubs.length; i++) {
+    final clubDocId = await getClubDocumentId(userClubs[i]);
+    postsInfo.add(db
         .collection("clubs")
         .doc(clubDocId)
         .collection("posts")
-        .where("date_time_meeting", isGreaterThan: now)
-        .where("date_time_posted", isLessThan: cutoffDate)
+        .where("date_time_posted", isLessThan: cutOffDate)
         .snapshots()
-        .map((querySnapshot) =>
-            querySnapshot.docs.map((doc) => doc.data()).toList());
-    recentPosts.add(clubPosts);
+        .map((querySnapshot) => querySnapshot.docs
+            .map((doc) => doc.data())
+            .where((data) => data != null)
+            .toList()));
   }
 
-  // Convert the list of dynamic maps to a list of maps with explicit type
-  List<Map<String, dynamic>> recentPostsList = [];
-  await Future.forEach(recentPosts,
-      (Stream<List<Map<String, dynamic>>> stream) async {
-    await for (var postList in stream) {
-      recentPostsList.addAll(postList);
-    }
-  });
+  // Combine the list of streams into a single stream
+  Stream<List<List<Map>>> combinedStream = Rx.combineLatest(
+    postsInfo,
+    (List<dynamic> values) => values.cast<List<Map>>(),
+  );
 
-  // Convert the list to a stream and return it
-  return Stream.value(recentPostsList);
+  return combinedStream;
+}
+
+
+
+// Stream<List<Map>> getAllClubs() {
+//   return db.collection("clubs").snapshots().map(
+//       (querySnapshot) => querySnapshot.docs.map((doc) => doc.data()).toList());
+// }
+
+Future<void> getRecentPostss() async {
+  print("clunIDs");
+  print(userClubs.toString());
+
+  // Compute the cutoff date as the current date/time plus three days
+  // DateTime now = DateTime.now();
+  // DateTime cutoffDate = now.add(Duration(days: 3));
+
+  // for (int i = 0; i < myClubIds.length; i++) {
+  //   final clubDocId = await getClubDocumentId(myClubIds[i]);
+  //   final clubName = await getClubNameById(clubDocId);
+  //   print("356");
+  //   print(clubName + ": " + clubDocId);
+
+  //   Stream<List<Map<String, dynamic>>> clubPosts = db
+  //       .collection("clubs")
+  //       .doc(clubDocId)
+  //       .collection("posts")
+  //       .where("date_time_meeting", isGreaterThan: now)
+  //       .where("date_time_posted", isLessThan: cutoffDate)
+  //       .snapshots()
+  //       .map((querySnapshot) =>
+  //           querySnapshot.docs.map((doc) => doc.data()).toList());
+
+  //   await for (var postList in clubPosts) {
+  //     yield postList;
+  //   }
+  // }
 }
