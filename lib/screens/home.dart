@@ -25,44 +25,36 @@ class _HomeState extends State<Home> {
             margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
             child: (SingleChildScrollView(
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                  const SizedBox(height: 30),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const SizedBox(height: 30),
 
-                  //my clubs
-                  const Text("My Clubs",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 30,
-                      )),
-                  const SizedBox(height: 25),
-                  myClubs(context),
+                //my clubs
+                const Text("My Clubs",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 30,
+                    )),
+                const SizedBox(height: 25),
+                myClubs(context),
 
-                  const SizedBox(height: 50),
+                const SizedBox(height: 50),
 
-                  //posts
-                  const Text("Posts",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 30,
-                      )),
-                  const SizedBox(height: 25),
-                  recentPosts("MSA", "77", context),
-                  // upcomingMeeting(
-                  //     "Club Name",
-                  //     "April 12, 2023 - 10:00 AM",
-                  //     "331",
-                  //     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in massa id sapien finibus congue sed vel nulla. Sed ac magna sed lacus aliquam pulvinar vitae sit amet purus. Vestibulum lobortis massa nec sapien eleifend efficitur. Nullam pellentesque tincidunt orci, eu facilisis dolor dignissim nec. Proin vel mi a sapien bibendum lobortis eget eu eros. In hac habitasse platea dictumst. Sed blandit in tellus et blandit.',
-                  //     "April 10, 2023 - 9:34 AM"),
-                  // announcement(
-                  //     "Club Name",
-                  //     "Materials",
-                  //     "Here are the materials from today. Look over them and get ready for next week. As always, email our instructors with any questions!",
-                  //     "April 10, 2023 - 9:34 AM"),
-                  const SizedBox(height: 100),
-                ])))));
+                //posts
+                const Text("Posts",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 30,
+                    )),
+                const SizedBox(height: 25),
+                clubPosts("Club Name", "77"),
+                // recentPosts(),
+
+                const SizedBox(height: 100),
+              ],
+            )))));
   }
 
   // Widget sectionTabs() {
@@ -113,9 +105,9 @@ class _HomeState extends State<Home> {
         });
   }
 
-  Widget recentPosts(String clubName, String clubId, BuildContext context) {
-    return FutureBuilder<Stream<List<List<Map>>>>(
-      future: getRecentPosts(),
+  Widget clubPosts(String clubName, String clubId) {
+    return FutureBuilder<Stream<List<Map>>>(
+      future: getClubPosts(clubId),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('${snapshot.error}');
@@ -125,50 +117,70 @@ class _HomeState extends State<Home> {
           return Center(child: CircularProgressIndicator());
         }
 
-        return StreamBuilder<List<List<Map>>>(
-            stream: snapshot.data!,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                print(snapshot.data);
-                return Text('${snapshot.error}');
+        return StreamBuilder<List<Map>>(
+          stream: snapshot.data!,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text('${snapshot.error}');
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+
+            List<Map> postsInfo = snapshot.data!;
+            List<Widget> postWidgets = [];
+
+            for (int i = 0; i < postsInfo.length; i++) {
+              if (postsInfo[i]['type'] == "General") {
+                postWidgets.add(announcement(clubName, postsInfo[i]['subject'],
+                    postsInfo[i]['body'], postsInfo[i]['date_time_posted']));
               }
-
-              print(snapshot.data);
-
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+              if (postsInfo[i]['type'] == "Meeting") {
+                postWidgets.add(upcomingMeeting(
+                    clubName,
+                    postsInfo[i]['date_time_meeting'],
+                    postsInfo[i]['location'],
+                    postsInfo[i]['body'],
+                    postsInfo[i]['date_time_posted']));
               }
+            }
 
-              List<List<Map>> postsInfo = snapshot.data!;
-              List<Widget> postWidgets = [];
-
-              for (int club = 0; club < postsInfo.length; club++) {
-                for (int i = 0; i < postsInfo.length; i++) {
-                  if (postsInfo[club][i]['type'] == "General") {
-                    postWidgets.add(announcement(
-                        clubName,
-                        postsInfo[club][i]['subject'],
-                        postsInfo[club][i]['body'],
-                        postsInfo[club][i]['date_time_posted']));
-                  }
-                  if (postsInfo[club][i]['type'] == "Meeting") {
-                    postWidgets.add(upcomingMeeting(
-                        clubName,
-                        postsInfo[club][i]['date_time_meeting'],
-                        postsInfo[club][i]['location'],
-                        postsInfo[club][i]['body'],
-                        postsInfo[club][i]['date_time_posted']));
-                  }
-                }
-              }
-
-              return SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(children: postWidgets));
-            });
+            return SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(children: postWidgets));
+          },
+        );
       },
     );
   }
+
+  Widget recentPosts() {
+    return FutureBuilder<Map<String, dynamic>>(
+      future: getUserData(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('${snapshot.error}');
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        Map<String, dynamic> data = snapshot.data!;
+        List<String> userClubs = data['clubs'];
+        List<Widget> recentPostsWidgets = [];
+        print(userClubs);
+
+        for (int i = 0; i < userClubs.length; i++) {
+          String clubId = userData['clubs'][i];
+          recentPostsWidgets.add(clubPosts("clubName", clubId));
+        }
+
+        return Column(children: recentPostsWidgets);
+      },
+    );
+  }
+}
 
   // Widget recentPosts(BuildContext context) {
   //   return StreamBuilder<List<Map<String, dynamic>>>(
@@ -222,4 +234,4 @@ class _HomeState extends State<Home> {
   //     },
   //   );
   // }
-}
+

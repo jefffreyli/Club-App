@@ -45,6 +45,7 @@ dependencies:
   intl: ^0.17.0
   google_fonts: ^4.0.3
   rxdart: ^0.27.7
+  stream_transform: ^2.1.0
 
 dev_dependencies:
   flutter_test:

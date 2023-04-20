@@ -10,7 +10,7 @@ var db = FirebaseFirestore.instance;
 final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
 Map<String, dynamic> userData = {};
 String userDocId = "";
-List userClubs = userData['clubs'];
+List<String> userClubs = userData['clubs'];
 
 Future<void> init() async {
   userData = await getUserData();
@@ -343,71 +343,4 @@ Future<void> addMeetingPost(String subject, String body, String date,
     "date_time_meeting": date + " - " + time,
     "date_time_posted": formattedDate
   });
-}
-
-Future<Stream<List<List<Map>>>> getRecentPosts() async {
-  DateTime now = DateTime.now();
-  DateTime cutOffDate = now.add(Duration(days: 5));
-  String formattedCutOffDate =
-      DateFormat('MM-dd-yyyy HH:mm').format(cutOffDate);
-
-  List<Stream<List<Map>>> postsInfo = [];
-  for (int i = 0; i < userClubs.length; i++) {
-    final clubDocId = await getClubDocumentId(userClubs[i]);
-    postsInfo.add(db
-        .collection("clubs")
-        .doc(clubDocId)
-        .collection("posts")
-        .where("date_time_posted", isLessThan: cutOffDate)
-        .snapshots()
-        .map((querySnapshot) => querySnapshot.docs
-            .map((doc) => doc.data())
-            .where((data) => data != null)
-            .toList()));
-  }
-
-  // Combine the list of streams into a single stream
-  Stream<List<List<Map>>> combinedStream = Rx.combineLatest(
-    postsInfo,
-    (List<dynamic> values) => values.cast<List<Map>>(),
-  );
-
-  return combinedStream;
-}
-
-
-
-// Stream<List<Map>> getAllClubs() {
-//   return db.collection("clubs").snapshots().map(
-//       (querySnapshot) => querySnapshot.docs.map((doc) => doc.data()).toList());
-// }
-
-Future<void> getRecentPostss() async {
-  print("clunIDs");
-  print(userClubs.toString());
-
-  // Compute the cutoff date as the current date/time plus three days
-  // DateTime now = DateTime.now();
-  // DateTime cutoffDate = now.add(Duration(days: 3));
-
-  // for (int i = 0; i < myClubIds.length; i++) {
-  //   final clubDocId = await getClubDocumentId(myClubIds[i]);
-  //   final clubName = await getClubNameById(clubDocId);
-  //   print("356");
-  //   print(clubName + ": " + clubDocId);
-
-  //   Stream<List<Map<String, dynamic>>> clubPosts = db
-  //       .collection("clubs")
-  //       .doc(clubDocId)
-  //       .collection("posts")
-  //       .where("date_time_meeting", isGreaterThan: now)
-  //       .where("date_time_posted", isLessThan: cutoffDate)
-  //       .snapshots()
-  //       .map((querySnapshot) =>
-  //           querySnapshot.docs.map((doc) => doc.data()).toList());
-
-  //   await for (var postList in clubPosts) {
-  //     yield postList;
-  //   }
-  // }
 }

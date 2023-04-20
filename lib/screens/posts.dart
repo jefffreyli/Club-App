@@ -22,16 +22,17 @@ class _PostsState extends State<Posts> {
   Widget build(BuildContext context) {
     h = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: Column(
-          children: [clubPosts(widget.club.name, widget.club.id, context)]),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.green[700],
-        child: const Icon(Icons.add_box_rounded),
-        onPressed: () {
-          navigate(context, EditPost(club: widget.club));
-        },
-      ),
-    );
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.green[700],
+          child: const Icon(Icons.add_box_rounded),
+          onPressed: () {
+            navigate(context, EditPost(club: widget.club));
+          },
+        ),
+        body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: clubPosts(widget.club.name, widget.club.id, context),
+        ));
   }
 
   Widget clubPosts(String clubName, String clubId, BuildContext context) {
@@ -75,9 +76,7 @@ class _PostsState extends State<Posts> {
               }
             }
 
-            return SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(children: postWidgets));
+            return Column(children: postWidgets);
           },
         );
       },
@@ -111,11 +110,11 @@ class _EditPostState extends State<EditPost> {
       case 0:
         return [
           TextFormField(
-              decoration: InputDecoration(hintText: 'Meeting Subject'),
-              onChanged: (value) {
-                subject1 = value;
-              },
-            ),
+            decoration: InputDecoration(hintText: 'Meeting Subject'),
+            onChanged: (value) {
+              subject1 = value;
+            },
+          ),
           const SizedBox(height: 15),
           TextField(
             cursorColor: Colors.grey[600],
@@ -265,9 +264,10 @@ class _EditPostState extends State<EditPost> {
           onPressed: () {
             Navigator.of(context).pop();
             _modeIndex == 0
-                ? addGeneralPost(subject1, _body1Controller.text, widget.club.id)
-                : addMeetingPost(subject2, _body2Controller.text, meetingDate, meetingTime,
-                    location, widget.club.id);
+                ? addGeneralPost(
+                    subject1, _body1Controller.text, widget.club.id)
+                : addMeetingPost(subject2, _body2Controller.text, meetingDate,
+                    meetingTime, location, widget.club.id);
           },
         ),
       ],
