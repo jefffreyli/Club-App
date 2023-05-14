@@ -1,15 +1,15 @@
-import '../fb_helper.dart';
 import 'package:flutter/material.dart';
 import '../clubModel.dart';
 import '../components/ClubCardSquare.dart';
 import '../components/Nav.dart';
 import '../components/Search.dart';
+import '../fb_helper.dart';
 
 class Explore extends StatefulWidget {
-  const Explore({super.key});
+  const Explore({Key? key}) : super(key: key);
 
   @override
-  State<Explore> createState() => _Explore();
+  _Explore createState() => _Explore();
 }
 
 class _Explore extends State<Explore> {
@@ -34,7 +34,7 @@ class _Explore extends State<Explore> {
               SizedBox(height: 10),
               allTabs(),
               SizedBox(height: 10),
-              allClubs(context, searchController.text),
+              allClubs(context, search),
               SizedBox(height: 25),
             ],
           ),
@@ -52,25 +52,13 @@ class _Explore extends State<Explore> {
           List<Widget> clubWidgets = [];
 
           for (int i = 0; i < clubsInfo.length; i++) {
-            if (searched == null || searched.isEmpty) {
-              clubWidgets.add(ClubCardSquare(
-                  club: Club(
-                      name: clubsInfo[i]['name'] ?? "",
-                      day: clubsInfo[i]['day'] ?? "",
-                      advisorName: clubsInfo[i]['advisor_name'] ?? "",
-                      advisorEmail: clubsInfo[i]['advisor_email'] ?? "",
-                      category: clubsInfo[i]['category'] ?? "",
-                      members: clubsInfo[i]['members'] ?? [],
-                      id: clubsInfo[i]['id'].toString(),
-                      description: clubsInfo[i]['description'] ?? "",
-                      president: clubsInfo[i]['president'] ?? "",
-                      vicePresident: clubsInfo[i]['vice_president'] ?? "",
-                      secretary: clubsInfo[i]['secretary'] ?? "",
-                      location: (clubsInfo[i]['location']).toString() ?? "")));
-              continue;
-            }
-
-            if ((clubsInfo[i]['name'] ?? "").contains(searched)) {
+            if ((searched == null || searched.isEmpty) ||
+                (clubsInfo[i]['name'] ?? "")
+                    .toLowerCase()
+                    .contains(searched.toLowerCase()) ||
+                (clubsInfo[i]['category'] ?? "")
+                    .toLowerCase()
+                    .contains(searched.toLowerCase())) {
               clubWidgets.add(ClubCardSquare(
                   club: Club(
                       name: clubsInfo[i]['name'] ?? "",
@@ -124,10 +112,12 @@ class _Explore extends State<Explore> {
               suffixIcon: IconButton(
                   icon: Icon(Icons.search),
                   onPressed: () {
-                    allClubs(context, searchController.text);
+                    setState(() {
+                      search = searchController.text;
+                    });
                   })),
           onChanged: (text) {
-            // setState(() => search = text.toLowerCase());
+            setState(() => search = text);
           },
         ),
       ],
@@ -157,7 +147,10 @@ class _Explore extends State<Explore> {
           color: Colors.grey[300],
           child: TextButton(
               onPressed: () {
-                searchController.text = "${categories[i]}";
+                setState(() {
+                  searchController.text = "${categories[i]}";
+                  search = searchController.text;
+                });
               },
               child: Text(
                 "${categories[i]}",

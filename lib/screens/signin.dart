@@ -21,7 +21,7 @@ class SignIn extends StatelessWidget {
       margin = w * 0.3;
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.grey[50],
       body: SafeArea(
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -60,7 +60,7 @@ class SignIn extends StatelessWidget {
                 const SizedBox(height: 25),
                 signInButton(context),
                 const SizedBox(height: 25),
-                continueWithGoogle(),
+                continueWithGoogle(context),
                 const SizedBox(height: 25),
                 bottomSignUpText(context)
               ],
@@ -117,16 +117,18 @@ class SignIn extends StatelessWidget {
     );
   }
 
-  Widget squareTile(String imagePath) {
+  Widget squareTile(String imagePath, BuildContext context) {
     return Container(
         padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade400),
+          border: Border.all(color: Colors.grey.shade300),
           borderRadius: BorderRadius.circular(16),
-          color: Colors.grey[200],
+          color: Colors.grey[100],
         ),
         child: GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Authentication.signInWithGoogle(context: context);
+          },
           child: Image.asset(
             imagePath,
             height: 40,
@@ -160,7 +162,7 @@ class SignIn extends StatelessWidget {
     );
   }
 
-  Widget continueWithGoogle() {
+  Widget continueWithGoogle(BuildContext context) {
     return (Column(
       children: [
         Padding(
@@ -183,7 +185,7 @@ class SignIn extends StatelessWidget {
               Expanded(
                 child: Divider(
                   thickness: 0.5,
-                  color: Colors.grey[400],
+                  color: Colors.grey[300],
                 ),
               ),
             ],
@@ -193,7 +195,7 @@ class SignIn extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            squareTile('assets/google.png'),
+            squareTile('assets/google.png', context),
           ],
         ),
       ],

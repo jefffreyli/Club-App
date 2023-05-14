@@ -1,12 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:club_app/screens/home.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:intl/intl.dart';
 import '../main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 var db = FirebaseFirestore.instance;
+User? user = FirebaseAuth.instance.currentUser;
 final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
 Map<String, dynamic> userData = {};
 String userDocId = "";
@@ -16,6 +20,117 @@ Future<void> init() async {
   userData = await getUserData();
   userDocId = await getDocumentIdByEmail(currentUserEmail!);
   getAllClubs();
+}
+
+class Authentication {
+  static SnackBar customSnackBar({required String content}) {
+    return SnackBar(
+      backgroundColor: Colors.black,
+      content: Text(
+        content,
+        style: const TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+      ),
+    );
+  }
+
+  static Future<FirebaseApp> initializeFirebase({
+    required BuildContext context,
+  }) async {
+    FirebaseApp firebaseApp = await Firebase.initializeApp();
+
+    user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const Home(),
+        ),
+      );
+    }
+
+    return firebaseApp;
+  }
+
+  static Future<User?> signInWithGoogle({required BuildContext context}) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user;
+
+    if (kIsWeb) {
+      GoogleAuthProvider authProvider = GoogleAuthProvider();
+
+      try {
+        final UserCredential userCredential =
+            await auth.signInWithPopup(authProvider);
+
+        user = userCredential.user;
+      } catch (e) {
+        print(e);
+      }
+    } else {
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+
+      final GoogleSignInAccount? googleSignInAccount =
+          await googleSignIn.signIn();
+
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
+
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleSignInAuthentication.accessToken,
+          idToken: googleSignInAuthentication.idToken,
+        );
+
+        try {
+          final UserCredential userCredential =
+              await auth.signInWithCredential(credential);
+
+          user = userCredential.user;
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'account-exists-with-different-credential') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              Authentication.customSnackBar(
+                content:
+                    'The account already exists with a different credential',
+              ),
+            );
+          } else if (e.code == 'invalid-credential') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              Authentication.customSnackBar(
+                content:
+                    'Error occurred while accessing credentials. Try again.',
+              ),
+            );
+          }
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            Authentication.customSnackBar(
+              content: 'Error occurred using Google Sign In. Try again.',
+            ),
+          );
+        }
+      }
+    }
+
+    return user;
+  }
+
+  static Future<void> signOut({required BuildContext context}) async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    try {
+      if (!kIsWeb) {
+        await googleSignIn.signOut();
+      }
+      await FirebaseAuth.instance.signOut();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        Authentication.customSnackBar(
+          content: 'Error signing out. Try again.',
+        ),
+      );
+    }
+  }
 }
 
 Future<void> signIn(
@@ -275,19 +390,17 @@ Future<String> getClubDocumentId(String id) async {
   }
 }
 
-Future<bool> presentOnDate(String date, String clubId, String osis) async {
-  final clubDocId = await getClubDocumentId(clubId);
-
-  final querySnapshot = await db
-      .collection("clubs")
-      .doc(clubDocId)
-      .collection("attendance")
-      .where("osis", isEqualTo: osis)
-      .where("date", isEqualTo: date)
-      .get();
-
-  return querySnapshot.docs
-      .isNotEmpty; // Return true if there are any documents in the querySnapshot, else false.
+Stream<bool> presentOnDate(String date, String clubId, String osis) {
+  return getClubDocumentId(clubId).asStream().flatMap((clubDocId) {
+    return db
+        .collection("clubs")
+        .doc(clubDocId)
+        .collection("attendance")
+        .where("osis", isEqualTo: osis)
+        .where("date", isEqualTo: date)
+        .snapshots()
+        .map((querySnapshot) => querySnapshot.docs.isNotEmpty);
+  });
 }
 
 Future<Map<String, dynamic>> getPersonData(String osis) async {
@@ -316,31 +429,79 @@ Future<Stream<List<Map>>> getClubPosts(String clubId) async {
           querySnapshot.docs.map((doc) => doc.data()).toList());
 }
 
-Future<void> addGeneralPost(String subject, String body, String clubID) async {
+Future<void> addGeneralPost(
+    String subject, String body, String clubID, String postId) async {
   final clubDocId = await getClubDocumentId(clubID);
   DateTime curr = DateTime.now();
   String formattedDate = DateFormat('MM-dd-yyyy HH:mm').format(curr);
 
-  await db.collection("clubs").doc(clubDocId).collection("posts").doc().set({
+  await db
+      .collection("clubs")
+      .doc(clubDocId)
+      .collection("posts")
+      .doc(postId)
+      .set({
     "subject": subject,
     "body": body,
     "type": "General",
-    "date_time_posted": formattedDate
+    "date_time_posted": formattedDate,
+    'id': postId
   });
 }
 
 Future<void> addMeetingPost(String subject, String body, String date,
-    String time, String location, String clubID) async {
+    String time, String location, String clubID, String postId) async {
   final clubDocId = await getClubDocumentId(clubID);
   DateTime curr = DateTime.now();
   String formattedDate = DateFormat('MM-dd-yyyy HH:mm').format(curr);
 
-  await db.collection("clubs").doc(clubDocId).collection("posts").doc().set({
+  await db
+      .collection("clubs")
+      .doc(clubDocId)
+      .collection("posts")
+      .doc(postId)
+      .set({
     "subject": subject,
     "body": body,
     "location": location,
     "type": "Meeting",
     "date_time_meeting": date + " - " + time,
-    "date_time_posted": formattedDate
+    "date_time_posted": formattedDate,
+    'id': postId
   });
 }
+
+Future<void> deletePost(String clubId, String postId) async {
+  final clubDocId = await getClubDocumentId(clubId);
+  db
+      .collection("clubs")
+      .doc(clubDocId)
+      .collection("posts")
+      .doc(postId)
+      .delete();
+  print("Post deleted");
+}
+
+Future<List<Map<String, dynamic>>> getPresentMembers(
+    String clubId, String osis, String date) async {
+  List<Map<String, dynamic>> presentMemberData = [];
+  final clubDocId = await getClubDocumentId(clubId);
+
+  final querySnapshots = await db
+      .collection("clubs")
+      .doc(clubDocId)
+      .collection("attendance")
+      .where("osis", isEqualTo: osis)
+      .where("date", isEqualTo: date)
+      .get();
+
+  List presentOsis =
+      querySnapshots.docs.map((doc) => doc['osis'] as String).toList();
+  for (int i = 0; i < presentOsis.length; i++) {
+    Map<String, dynamic> memberData = await getPersonData(presentOsis[i]);
+    presentMemberData.add(memberData);
+  }
+
+  return presentMemberData;
+}
+

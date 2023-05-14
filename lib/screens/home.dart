@@ -134,7 +134,7 @@ class _HomeState extends State<Home> {
             for (int i = 0; i < postsInfo.length; i++) {
               if (postsInfo[i]['type'] == "General") {
                 postWidgets.add(announcement(clubName, postsInfo[i]['subject'],
-                    postsInfo[i]['body'], postsInfo[i]['date_time_posted']));
+                    postsInfo[i]['body'], postsInfo[i]['date_time_posted'], clubId, postsInfo[i]['id']));
               }
               if (postsInfo[i]['type'] == "Meeting") {
                 postWidgets.add(upcomingMeeting(
@@ -142,7 +142,11 @@ class _HomeState extends State<Home> {
                     postsInfo[i]['date_time_meeting'],
                     postsInfo[i]['location'],
                     postsInfo[i]['body'],
-                    postsInfo[i]['date_time_posted']));
+                    postsInfo[i]['date_time_posted'],
+                    clubId,
+                    postsInfo[i]['id']
+                    
+                    ));
               }
             }
 

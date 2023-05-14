@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../screens/clubHome.dart';
+import '../screens/club/clubHome.dart';
 import '../clubModel.dart';
 import '../utils.dart';
 import 'Tag.dart';

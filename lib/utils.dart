@@ -25,3 +25,21 @@ void navigate(BuildContext context, Widget w) {
     MaterialPageRoute(builder: (context) => w),
   );
 }
+
+void showSnackbar(
+  String message,
+  Color? color,
+  BuildContext context,
+) {
+  final snackBar = SnackBar(
+    backgroundColor: color,
+    content: Text(message),
+    action: SnackBarAction(
+      label: message,
+      onPressed: () {
+        // Some code to undo the change.
+      },
+    ),
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}

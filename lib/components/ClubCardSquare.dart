@@ -3,7 +3,7 @@ import 'package:club_app/utils.dart';
 import '../clubModel.dart';
 import 'package:flutter/material.dart';
 import '../fb_helper.dart';
-import '../screens/clubHome.dart';
+import '../screens/club/clubHome.dart';
 import 'Tag.dart';
 
 class ClubCardSquare extends StatefulWidget {

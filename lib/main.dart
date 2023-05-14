@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:html';
 import '../screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -6,12 +8,14 @@ import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'screens/signin.dart';
 import '/fb_helper.dart';
+import 'screens/splash.dart'; // Import your SplashScreen widget
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(MyApp());
   init();
 }
@@ -26,22 +30,35 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primaryColor: Colors.grey[100],
+          primaryColor: Colors.grey[50],
           textTheme: GoogleFonts.nunitoSansTextTheme(
             Theme.of(context).textTheme,
           )),
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
+      home: FutureBuilder<void>(
+        future: _waitThreeSeconds(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasData) {
-            return Home();
+            return const Splash();
           } else {
-            return SignIn();
+            return StreamBuilder<User?>(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasData) {
+                  return Home();
+                } else {
+                  return SignIn();
+                }
+              },
+            );
           }
         },
       ),
     );
+  }
+
+  Future<void> _waitThreeSeconds() async {
+    await Future.delayed(Duration(seconds: 3));
   }
 }
