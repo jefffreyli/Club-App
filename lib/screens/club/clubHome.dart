@@ -29,9 +29,9 @@ class _ClubHomeState extends State<ClubHome> {
     h = MediaQuery.of(context).size.height;
 
     if (w < 600)
-      margin = 15;
+      margin = 12;
     else if (w < 900)
-      margin = 60;
+      margin = 55;
     else
       margin = 75;
 
@@ -77,7 +77,7 @@ class _ClubHomeState extends State<ClubHome> {
         ),
         centerTitle: true,
       ),
-      drawer: sidebar(context),
+      // drawer: sidebar(context),
       body: Container(
           margin: EdgeInsets.fromLTRB(15, 15, 15, 15),
           child: widgetOptions.elementAt(selectedIndex)),
@@ -191,7 +191,7 @@ class _ClubHomeState extends State<ClubHome> {
       memberWidgets.add(memberWidget);
     }
     return Container(
-      margin: EdgeInsets.only(right: 30, left: 30),
+      // margin: EdgeInsets.only(right: margin, left: margin),
       child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(children: memberWidgets)),

@@ -1,3 +1,4 @@
+import '../screens/calendar.dart';
 import '../screens/explore.dart';
 import '../screens/settings.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ Widget sidebar(BuildContext context) {
     child: Column(
       children: [
         SizedBox(
-          height: 100,
+          height: 90,
           child: DrawerHeader(
             decoration: BoxDecoration(
               color: Colors.grey[100],
@@ -87,17 +88,16 @@ Widget sidebar(BuildContext context) {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => Profile(
-                    person: Person(
-                  name: (userData['full_name'] ?? "Name"),
-                  email: (userData['email'] ?? "Email"),
-                  userType: (userData['user_type'] ?? "User Type"),
-                  graduationYear:
-                      (userData['graduation_year'] ?? "Graduation Year"),
-                  aboutMe: (userData['about_me'] ?? "About Me"),
-                  imageURL: (userData['image_url'] ?? fillerNetworkImage),
-                ),
-                editable: true,
-                
+                  person: Person(
+                    name: (userData['full_name'] ?? "Name"),
+                    email: (userData['email'] ?? "Email"),
+                    userType: (userData['user_type'] ?? "User Type"),
+                    graduationYear:
+                        (userData['graduation_year'] ?? "Graduation Year"),
+                    aboutMe: (userData['about_me'] ?? "About Me"),
+                    imageURL: (userData['image_url'] ?? fillerNetworkImage),
+                  ),
+                  editable: true,
                 ),
               ),
             );
@@ -115,10 +115,10 @@ Widget sidebar(BuildContext context) {
           },
         ),
         ListTile(
-          title: const Text('Attendance'),
+          title: const Text('Calendar'),
           leading: Icon(Icons.calendar_month),
           onTap: () {
-            Navigator.pop(context);
+            navigate(context, Calendar());
           },
         ),
         Container(

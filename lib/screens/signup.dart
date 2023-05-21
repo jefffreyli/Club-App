@@ -32,35 +32,37 @@ class _SignUpState extends State<SignUp> {
       margin = w * 0.3;
 
     return Scaffold(
-        body: SafeArea(
-            child: SingleChildScrollView(
-                child: Container(
-                    margin: EdgeInsets.only(left: margin, right: margin),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const SizedBox(height: 75),
-                          heading(),
-                          const SizedBox(height: 25),
-                          buildField(nameController, "Full Name"),
-                          const SizedBox(height: 10),
-                          buildField(emailController, "Email"),
-                          const SizedBox(height: 10),
-                          buildField(passwordController, "Password"),
-                          const SizedBox(height: 10),
-                          buildField(osisController, "OSIS"),
-                          const SizedBox(height: 10),
-                          buildField(yearController, "Graduation Year"),
-                          const SizedBox(height: 10),
-                          buildField(classController, "Official Class"),
-                          const SizedBox(height: 25),
-                          signUpButton(context),
-                          const SizedBox(height: 25),
-                          continueWithGoogle(),
-                          const SizedBox(height: 25),
-                          bottomSignInText(),
-                          const SizedBox(height: 25),
-                        ])))));
+        body: Container(
+      child: SafeArea(
+          child: SingleChildScrollView(
+              child: Container(
+                  margin: EdgeInsets.only(left: margin, right: margin),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 75),
+                        heading(),
+                        const SizedBox(height: 25),
+                        buildField(nameController, "Full Name"),
+                        const SizedBox(height: 10),
+                        buildField(emailController, "Email"),
+                        const SizedBox(height: 10),
+                        buildField(passwordController, "Password"),
+                        const SizedBox(height: 10),
+                        buildField(osisController, "OSIS"),
+                        const SizedBox(height: 10),
+                        buildField(yearController, "Graduation Year"),
+                        const SizedBox(height: 10),
+                        buildField(classController, "Official Class"),
+                        const SizedBox(height: 25),
+                        signUpButton(context),
+                        const SizedBox(height: 25),
+                        continueWithGoogle(),
+                        const SizedBox(height: 25),
+                        bottomSignInText(),
+                        const SizedBox(height: 25),
+                      ])))),
+    ));
   }
 
   Widget heading() {

@@ -1,8 +1,14 @@
 import 'package:club_app/fb_helper.dart';
 import 'package:flutter/material.dart';
 
-Widget announcement(String clubName, String subject, String body,
-    String dateTimePosted, String clubId, String postId) {
+Widget announcement(
+    {String? clubName,
+    String? subject,
+    String? body,
+    String? dateTimePosted,
+    String? clubId,
+    String? postId,
+    bool? showDelete=true}) {
   return Card(
     elevation: 2,
     child: Stack(
@@ -13,26 +19,26 @@ Widget announcement(String clubName, String subject, String body,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                clubName,
+                clubName ?? "Null",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const Divider(height: 15),
               const SizedBox(height: 10),
               Text(
-                subject,
+                subject ?? "Null",
                 style:
                     const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 15),
               Text(
-                body,
+                body ?? "Null",
                 style: TextStyle(fontSize: 14, color: Colors.grey[600]),
               ),
               const SizedBox(height: 20),
               Align(
                 alignment: Alignment.bottomRight,
                 child: Text(
-                  "Posted " + dateTimePosted,
+                  "Posted $dateTimePosted",
                   style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontSize: 12,
@@ -43,23 +49,30 @@ Widget announcement(String clubName, String subject, String body,
             ],
           ),
         ),
-        Positioned(
+        showDelete! ? Positioned(
           right: 0,
           bottom: 0,
           child: IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () {
-              deletePost(clubId, postId);
+            deletePost(clubId!, postId!);
             },
           ),
-        ),
+        ) : Container(),
       ],
     ),
   );
 }
 
-Widget upcomingMeeting(String clubName, String dateTime, String location,
-    String description, String dateTimePosted, String clubId, String postId) {
+Widget upcomingMeeting(
+    {String? clubName,
+    String? dateTimeMeeting,
+    String? location,
+    String? body,
+    String? dateTimePosted,
+    String? clubId,
+    String? postId,
+    bool? showDelete=true}) {
   return Card(
     elevation: 2,
     child: Stack(
@@ -70,7 +83,7 @@ Widget upcomingMeeting(String clubName, String dateTime, String location,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                clubName,
+                clubName ?? "Null",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 15),
@@ -83,7 +96,7 @@ Widget upcomingMeeting(String clubName, String dateTime, String location,
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    dateTime,
+                    dateTimeMeeting ?? "Null",
                     style: TextStyle(fontSize: 14, color: Colors.grey[500]),
                   ),
                 ],
@@ -98,7 +111,7 @@ Widget upcomingMeeting(String clubName, String dateTime, String location,
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    location,
+                    location ?? "Null",
                     style: TextStyle(fontSize: 14, color: Colors.grey[500]),
                   ),
                 ],
@@ -111,14 +124,14 @@ Widget upcomingMeeting(String clubName, String dateTime, String location,
               ),
               const SizedBox(height: 10),
               Text(
-                description,
+                body ?? "Null",
                 style: TextStyle(fontSize: 14, color: Colors.grey[600]),
               ),
               const SizedBox(height: 20),
               Align(
                 alignment: Alignment.bottomRight,
                 child: Text(
-                  "Posted " + dateTimePosted,
+                  "Posted $dateTimePosted",
                   style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontSize: 12,
@@ -129,16 +142,16 @@ Widget upcomingMeeting(String clubName, String dateTime, String location,
             ],
           ),
         ),
-        Positioned(
+        showDelete! ? Positioned(
           right: 0,
           bottom: 0,
           child: IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () {
-              deletePost(clubId, postId);
+              deletePost(clubId ?? "Null", postId ?? "Null");
             },
           ),
-        ),
+        ): Container(),
       ],
     ),
   );

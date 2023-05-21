@@ -24,19 +24,22 @@ class _Explore extends State<Explore> {
     return Scaffold(
       appBar: nav("Explore"),
       drawer: sidebar(context),
-      body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.only(left: 15, right: 15),
-          child: Column(
-            children: [
-              SizedBox(height: 10),
-              searchClub(),
-              SizedBox(height: 10),
-              allTabs(),
-              SizedBox(height: 10),
-              allClubs(context, search),
-              SizedBox(height: 25),
-            ],
+      body: Container(
+        color: Colors.grey[100],
+        child: SafeArea(
+          child: Container(
+            margin: EdgeInsets.only(left: 15, right: 15),
+            child: Column(
+              children: [
+                SizedBox(height: 10),
+                searchClub(),
+                SizedBox(height: 10),
+                allTabs(),
+                SizedBox(height: 10),
+                allClubs(context, search),
+                SizedBox(height: 25),
+              ],
+            ),
           ),
         ),
       ),

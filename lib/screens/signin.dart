@@ -30,7 +30,7 @@ class SignIn extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 100),
+                const SizedBox(height: 150),
                 heading(),
                 const SizedBox(height: 25),
                 textField(
@@ -50,17 +50,20 @@ class SignIn extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(
-                        'Forgot Password?',
-                        style: TextStyle(color: Colors.grey[600]),
+                      TextButton(
+                        child: Text(
+                          'Forgot Password?',
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                        onPressed: () {},
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 25),
                 signInButton(context),
-                const SizedBox(height: 25),
-                continueWithGoogle(context),
+                // const SizedBox(height: 25),
+                // continueWithGoogle(context),
                 const SizedBox(height: 25),
                 bottomSignUpText(context)
               ],

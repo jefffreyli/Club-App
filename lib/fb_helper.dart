@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:club_app/screens/home.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,6 +22,8 @@ Future<void> init() async {
   userData = await getUserData();
   userDocId = await getDocumentIdByEmail(currentUserEmail!);
   getAllClubs();
+  await getRecentPosts();
+  await clubsOnDate("05-20-2023");
 }
 
 class Authentication {
@@ -191,6 +195,17 @@ void signOut(BuildContext context) {
   FirebaseAuth.instance.signOut();
 
   navigatorKey.currentState!.popUntil((route) => route.isFirst);
+}
+
+Future<void> resetPassword(String email) async {
+  FirebaseAuth auth = FirebaseAuth.instance;
+  try {
+    await auth.sendPasswordResetEmail(email: email);
+    print('Password reset email sent');
+  } catch (error) {
+    print('Failed to send password reset email: $error');
+    throw Exception('Failed to reset password');
+  }
 }
 
 Future<UserCredential> signInWithGoogle() async {
@@ -418,68 +433,153 @@ Future<Map<String, dynamic>> getPersonDataByFullName(String fullName) async {
 }
 
 // posts
-Future<Stream<List<Map>>> getClubPosts(String clubId) async {
-  final clubDocId = await getClubDocumentId(clubId);
-  return db
-      .collection("clubs")
-      .doc(clubDocId)
-      .collection("posts")
-      .snapshots()
-      .map((querySnapshot) =>
-          querySnapshot.docs.map((doc) => doc.data()).toList());
-}
 
-Future<void> addGeneralPost(
-    String subject, String body, String clubID, String postId) async {
-  final clubDocId = await getClubDocumentId(clubID);
+// Future<void> addGeneralPost(String subject, String body, String clubName,
+//     String clubId, String postId) async {
+//   final clubDocId = await getClubDocumentId(clubId);
+//   DateTime curr = DateTime.now();
+//   String formattedDate = DateFormat('MM-dd-yyyy HH:mm').format(curr);
+
+//   await db
+//       .collection("clubs")
+//       .doc(clubDocId)
+//       .collection("posts")
+//       .doc(postId)
+//       .set({
+//     "subject": subject,
+//     "body": body,
+//     "type": "General",
+//     "date_time_posted": formattedDate,
+//     'id': postId,
+//     'club_id': clubId,
+//     'club_name': clubName
+//   });
+// }
+
+Future<void> addGeneralPost(String subject, String body, String clubName,
+    String clubId, String postId) async {
   DateTime curr = DateTime.now();
   String formattedDate = DateFormat('MM-dd-yyyy HH:mm').format(curr);
 
-  await db
-      .collection("clubs")
-      .doc(clubDocId)
-      .collection("posts")
-      .doc(postId)
-      .set({
+  await db.collection("posts").doc(postId).set({
     "subject": subject,
     "body": body,
     "type": "General",
     "date_time_posted": formattedDate,
-    'id': postId
+    'id': postId,
+    'club_id': clubId,
+    'club_name': clubName
   });
 }
 
-Future<void> addMeetingPost(String subject, String body, String date,
-    String time, String location, String clubID, String postId) async {
-  final clubDocId = await getClubDocumentId(clubID);
+// Future<void> addMeetingPost(
+//     String subject,
+//     String body,
+//     String date,
+//     String time,
+//     String location,
+//     String clubName,
+//     String clubId,
+//     String postId) async {
+//   final clubDocId = await getClubDocumentId(clubId);
+//   DateTime curr = DateTime.now();
+//   String formattedDate = DateFormat('MM-dd-yyyy HH:mm').format(curr);
+
+//   await db
+//       .collection("clubs")
+//       .doc(clubDocId)
+//       .collection("posts")
+//       .doc(postId)
+//       .set({
+//     "subject": subject,
+//     "body": body,
+//     "location": location,
+//     "type": "Meeting",
+//     "date_time_meeting": date + " - " + time,
+//     "date_time_posted": formattedDate,
+//     'id': postId,
+//     'club_id': clubId,
+//     'club_name': clubName
+//   });
+// }
+
+Future<void> addMeetingPost(
+    String subject,
+    String body,
+    String date,
+    String time,
+    String location,
+    String clubName,
+    String clubId,
+    String postId) async {
+  final clubDocId = await getClubDocumentId(clubId);
   DateTime curr = DateTime.now();
   String formattedDate = DateFormat('MM-dd-yyyy HH:mm').format(curr);
 
-  await db
-      .collection("clubs")
-      .doc(clubDocId)
-      .collection("posts")
-      .doc(postId)
-      .set({
+  await db.collection("posts").doc(postId).set({
     "subject": subject,
     "body": body,
     "location": location,
     "type": "Meeting",
-    "date_time_meeting": date + " - " + time,
+    "date_time_meeting": "$date - $time",
     "date_time_posted": formattedDate,
-    'id': postId
+    'id': postId,
+    'club_id': clubId,
+    'club_name': clubName
   });
 }
 
 Future<void> deletePost(String clubId, String postId) async {
+  db.collection("posts").doc(postId).delete();
+}
+
+// Future<Stream<List<Map>>> getClubPosts(String clubId) async {
+//   final clubDocId = await getClubDocumentId(clubId);
+//   return db
+//       .collection("clubs")
+//       .doc(clubDocId)
+//       .collection("posts")
+//       .snapshots()
+//       .map((querySnapshot) =>
+//           querySnapshot.docs.map((doc) => doc.data()).toList());
+// }
+
+Future<Stream<List<Map>>> getClubPosts(String clubId) async {
   final clubDocId = await getClubDocumentId(clubId);
-  db
-      .collection("clubs")
-      .doc(clubDocId)
-      .collection("posts")
-      .doc(postId)
-      .delete();
-  print("Post deleted");
+  return db.collection("posts").snapshots().map(
+      (querySnapshot) => querySnapshot.docs.map((doc) => doc.data()).toList());
+}
+
+// Future<List<Map<String, dynamic>>> getRecentPosts() async {
+//   List<Map<String, dynamic>> posts = [];
+
+//   List clubIds = userData['clubs'];
+//   for (int i = 0; i < clubIds.length; i++) {
+//     final clubDocId = await getClubDocumentId(clubIds[i]);
+//     var clubPosts = await db
+//         .collection("clubs")
+//         .doc(clubDocId)
+//         .collection("posts")
+//         .get()
+//         .then((querySnapshot) =>
+//             querySnapshot.docs.map((doc) => doc.data()).toList());
+
+//     posts.addAll(clubPosts);
+//   }
+//   return posts;
+// }
+
+Future<List<Map<String, dynamic>>> getRecentPosts() async {
+  List<Map<String, dynamic>> posts = [];
+
+  List clubIds = userData['clubs'];
+  for (int i = 0; i < clubIds.length; i++) {
+    var clubPosts = await db.collection("posts").get().then((querySnapshot) =>
+        querySnapshot.docs.map((doc) => doc.data()).toList());
+
+    posts.addAll(clubPosts);
+  }
+  return posts;
 }
 
 Future<List<Map<String, dynamic>>> getPresentMembers(
@@ -505,3 +605,87 @@ Future<List<Map<String, dynamic>>> getPresentMembers(
   return presentMemberData;
 }
 
+Future<void> updateSettings({
+  String? appearance,
+  String? emailNotifications,
+  String? mobileNotifications,
+}) async {
+  Map<String, dynamic> updates = {};
+  if (appearance != null) {
+    updates['appearance'] = appearance;
+    userData['appearance'] = appearance;
+  }
+  if (emailNotifications != null) {
+    updates['email_notifications'] = emailNotifications;
+    userData['email_notifications'] = emailNotifications;
+  }
+  if (mobileNotifications != null) {
+    updates['mobile_notifications'] = mobileNotifications;
+    userData['mobile_notifications'] = mobileNotifications;
+  }
+
+  db.collection('users').doc(userDocId).update(updates);
+}
+
+// Future<List<Map<String, dynamic>>> clubsOnDate(String date) async {
+//   List<Map<String, dynamic>> matchingClubs = [];
+
+//   // Get all clubs
+//   var clubSnapshot = await db.collection('clubs').get();
+//   List clubs = clubSnapshot.docs.map((doc) => doc.data()).toList();
+
+//   for (int i = 0; i < clubs.length; i++) {
+//     var club = clubs[i];
+//     String clubId = (club['id']).toString();
+//     String clubDocId = await getClubDocumentId(clubId.toString());
+
+//     var postsSnapshot =
+//         await db.collection('clubs').doc(clubDocId).collection('posts').get();
+//     var posts = postsSnapshot.docs.map((doc) => doc.data()).toList();
+//     if (posts.isEmpty) {
+//       continue;
+//     }
+
+//     // Search in posts for the matching date
+//     for (var post in posts) {
+//       if (post['date_time_meeting'] == null) continue;
+//       if (post['date_time_meeting'].toString().contains(date)) {
+//         matchingClubs.add(club);
+//         break;
+//       }
+//     }
+//   }
+
+//   return matchingClubs;
+// }
+
+Future<List<Map<String, dynamic>>> clubsOnDate(String date) async {
+  List<Map<String, dynamic>> matchingClubs = [];
+  Set<String> matchingClubIds = {};
+
+  // Get all posts
+  var postsSnapshot = await db.collection('posts').get();
+  var posts = postsSnapshot.docs.map((doc) => doc.data()).toList();
+
+  // Search in posts for the matching date
+  for (var post in posts) {
+    if (post['date_time_meeting'] != null &&
+        post['date_time_meeting'].toString().contains(date)) {
+      matchingClubIds.add(
+          post['clubId']); // Assuming each post has a reference to its club
+    }
+  }
+
+  // Get all clubs
+  var clubSnapshot = await db.collection('clubs').get();
+  List clubs = clubSnapshot.docs.map((doc) => doc.data()).toList();
+
+  // Filter clubs that have a matching post
+  for (var club in clubs) {
+    if (matchingClubIds.contains(club['id'])) {
+      matchingClubs.add(club);
+    }
+  }
+
+  return matchingClubs;
+}

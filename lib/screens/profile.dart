@@ -24,7 +24,7 @@ class _Profile extends State<Profile> {
 
     return Scaffold(
         appBar: nav("Profile"),
-        drawer: sidebar(context),
+        // drawer: sidebar(context),
         floatingActionButton: Container(
             margin: EdgeInsets.only(right: 5),
             child: widget.editable ? FloatingActionButton(

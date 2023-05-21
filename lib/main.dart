@@ -8,7 +8,10 @@ import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'screens/signin.dart';
 import '/fb_helper.dart';
-import 'screens/splash.dart'; // Import your SplashScreen widget
+import 'screens/splash.dart';
+import 'utils.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +29,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // darkTheme: ThemeData.dark(),
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -34,6 +36,8 @@ class MyApp extends StatelessWidget {
           textTheme: GoogleFonts.nunitoSansTextTheme(
             Theme.of(context).textTheme,
           )),
+      // darkTheme: MyThemes.darkTheme,
+      // themeMode: ThemeMode.system,
       home: FutureBuilder<void>(
         future: _waitThreeSeconds(),
         builder: (context, snapshot) {

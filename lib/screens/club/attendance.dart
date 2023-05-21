@@ -109,8 +109,8 @@ class _AttendanceState extends State<Attendance> {
                   style: TextStyle(fontWeight: FontWeight.w600)),
               const SizedBox(height: 25),
               Text(
-                  "Attendance is usually updated once a week. If you were wrongfully marked absent for the day, it is your responsibility to contact the club leaders and get it resolved."),
-              const SizedBox(height: 25),
+                  "Attendance is updated weekly. If you were wrongfully marked absent for the day, it is your responsibility to contact the club leaders and get it resolved."),
+              Container(color: Colors.white, height: 25),
             ]),
           )),
     );

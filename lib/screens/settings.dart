@@ -1,3 +1,4 @@
+import '../fb_helper.dart';
 import '../utils.dart';
 import 'package:flutter/material.dart';
 import '../components/Nav.dart';
@@ -14,18 +15,18 @@ class _SettingsState extends State<Settings> {
     "Mobile push notifications",
     "Email notifications"
   ];
+
   List notificationSettingsSubtitle = [
     "Receive push notifications on important updates and announcements via your mobile app.",
     "Receive emails on important updates and announcements."
   ];
-  List notificationSettingsBooleans = [false, false];
 
   List settingsTitle = ["Password", "Appearance"];
+
   List settingsSubtitle = [
     "Change your password.",
     "Customize how $appName looks on your device."
   ];
-  List settingsBooleans = [false, false];
 
   @override
   Widget build(BuildContext context) {
@@ -55,25 +56,31 @@ class _SettingsState extends State<Settings> {
         const SizedBox(height: 5),
         Divider(color: Colors.grey[300], height: 10),
         Column(
-            children: List.generate(
-          notificationSettingsTitle.length,
-          (index) => Container(
+            children: notificationSettingsTitle.map((title) {
+          return Container(
             margin: EdgeInsets.only(bottom: 5),
             child: ListTile(
-              title: Text(notificationSettingsTitle[index]),
-              subtitle: Text(notificationSettingsSubtitle[index]),
+              title: Text(title),
+              subtitle: Text(notificationSettingsSubtitle[
+                  notificationSettingsTitle.indexOf(title)]),
               trailing: Switch(
-                value: notificationSettingsBooleans[index],
+                value: userData[title == "Email notifications"
+                        ? 'email_notifications'
+                        : 'mobile_notifications'] ==
+                    'true',
                 activeColor: Colors.blue[400],
-                onChanged: (value) {
-                  setState(() {
-                    notificationSettingsBooleans[index] = value;
-                  });
+                onChanged: (value) async {
+                  if (title == "Email notifications") {
+                    await updateSettings(emailNotifications: value.toString());
+                  } else if (title == "Mobile push notifications") {
+                    await updateSettings(mobileNotifications: value.toString());
+                  }
+                  setState(() {}); // Refresh UI
                 },
               ),
             ),
-          ),
-        )),
+          );
+        }).toList()),
       ],
     );
   }
@@ -91,25 +98,25 @@ class _SettingsState extends State<Settings> {
         const SizedBox(height: 5),
         Divider(color: Colors.grey[300], height: 10),
         Column(
-            children: List.generate(
-          notificationSettingsTitle.length,
-          (index) => Container(
+            children: settingsTitle.map((title) {
+          return Container(
             margin: EdgeInsets.only(bottom: 5),
             child: ListTile(
-              title: Text(settingsTitle[index]),
-              subtitle: Text(settingsSubtitle[index]),
-              trailing: Switch(
-                value: settingsBooleans[index],
-                activeColor: Colors.blue[400],
-                onChanged: (value) {
-                  setState(() {
-                    settingsBooleans[index] = value;
-                  });
-                },
-              ),
+              title: Text(title),
+              subtitle: Text(settingsSubtitle[settingsTitle.indexOf(title)]),
+              trailing: title == "Appearance"
+                  ? Switch(
+                      value: userData['appearance'] == 'true',
+                      activeColor: Colors.blue[400],
+                      onChanged: (value) async {
+                        await updateSettings(appearance: value.toString());
+                        setState(() {}); // Refresh UI
+                      },
+                    )
+                  : null,
             ),
-          ),
-        )),
+          );
+        }).toList()),
       ],
     );
   }
