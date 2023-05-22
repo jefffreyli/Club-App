@@ -76,7 +76,7 @@ class _PostsState extends State<Posts> {
               if (postsInfo[i]['type'] == "Meeting") {
                 postWidgets.add(upcomingMeeting(
                     clubName: postsInfo[i]['club_name'],
-                    dateTimeMeeting: postsInfo[i]['date_time_meeting'],
+                    dateTimeMeeting: postsInfo[i]['meeting_date'],
                     location: postsInfo[i]['location'],
                     body: postsInfo[i]['body'],
                     dateTimePosted: postsInfo[i]['date_time_posted'],
@@ -113,7 +113,6 @@ class _EditPostState extends State<EditPost> {
   String subject2 = '';
   // String body2 = '';
   String meetingDate = "";
-  String meetingTime = "";
   String location = "";
 
   List<Widget> _buildModeContent() {
@@ -193,38 +192,6 @@ class _EditPostState extends State<EditPost> {
                       dateController.text =
                           DateFormat("MM-dd-yyyy").format(date);
                       meetingDate = dateController.text;
-                    }
-                  },
-                ),
-              ),
-              SizedBox(width: 10),
-              Expanded(
-                child: TextFormField(
-                  controller: timeController,
-                  decoration: const InputDecoration(
-                      hintText: '3:45 PM', icon: Icon(Icons.watch_later)),
-                  onTap: () async {
-                    var time = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                      builder: (BuildContext context, Widget? child) {
-                        return Theme(
-                          data: ThemeData.light().copyWith(
-                            colorScheme: ColorScheme.light(
-                              primary:
-                                  green_2, // This changes the color of the button confirm
-                            ),
-                            buttonTheme: ButtonThemeData(
-                                textTheme: ButtonTextTheme.primary),
-                          ),
-                          child: child!,
-                        );
-                      },
-                    );
-                    if (time != null) {
-                      meetingTime = time.format(context);
-                      timeController.text = meetingTime;
-                      // meetingTime = timeController.text;
                     }
                   },
                 ),
@@ -356,7 +323,6 @@ class _EditPostState extends State<EditPost> {
                       subject2,
                       _body2Controller.text,
                       meetingDate,
-                      meetingTime,
                       location,
                       widget.club.name,
                       widget.club.id,

@@ -27,7 +27,6 @@ class _CalendarState extends State<Calendar> {
       appBar: nav("Calendar"),
       drawer: sidebar(context),
       body: Container(
-          color: Colors.white,
           padding: EdgeInsets.only(left: 20, right: 20),
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
@@ -73,6 +72,7 @@ class _CalendarState extends State<Calendar> {
                 ),
               ),
               const SizedBox(height: 50),
+              Text("Tap on a date to see which clubs are meeting that day.")
             ]),
           )),
     );

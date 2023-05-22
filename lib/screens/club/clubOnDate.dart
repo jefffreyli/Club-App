@@ -19,14 +19,17 @@ class _ClubsOnDateState extends State<ClubsOnDate> {
     return Scaffold(
         appBar: nav(widget.date.toString()),
         body: Container(
-          margin: const EdgeInsets.only(top: 20, bottom: 20, right: 25, left: 25),
+          margin:
+              const EdgeInsets.only(top: 20, bottom: 20, right: 25, left: 25),
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: FutureBuilder<List<Map<String, dynamic>>>(
               future: clubsOnDate(widget.date),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator()); // Show a loading spinner while waiting
+                  return Center(
+                      child:
+                          CircularProgressIndicator()); // Show a loading spinner while waiting
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
@@ -45,7 +48,6 @@ class _ClubsOnDateState extends State<ClubsOnDate> {
                           vicePresident: clubInfo['vice_president'] ?? "",
                           secretary: clubInfo['secretary'] ?? "",
                           location: (clubInfo['location']).toString() ?? "");
-
                       return ClubCardHorizontal(club: c);
                     }).toList(),
                   );
