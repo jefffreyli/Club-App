@@ -1,9 +1,10 @@
+import 'package:club_app/utils.dart';
 import 'package:flutter/material.dart';
 
 import '../components/ClubCardHorizontal.dart';
 import '../components/Posts.dart';
 import '../fb_helper.dart';
-import '../clubModel.dart';
+import '../models/club.dart';
 import '../components/Nav.dart';
 
 class Home extends StatefulWidget {
@@ -19,40 +20,41 @@ class _HomeState extends State<Home> {
     return Scaffold(
         appBar: nav("Home"),
         drawer: sidebar(context),
-        body: Container(
-            margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-            child: SingleChildScrollView(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                const SizedBox(height: 30),
+        body: SingleChildScrollView(
+          child: Container(
+              margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  const SizedBox(height: 30),
 
-                //my clubs
-                const Text("My Clubs",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 30,
-                    )),
-                const SizedBox(height: 25),
-                myClubs(context),
+                  //my clubs
+                  const Text("My Clubs",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 30,
+                      )),
+                  const SizedBox(height: 25),
+                  myClubs(context),
 
-                const SizedBox(height: 50),
+                  const SizedBox(height: 50),
 
-                //posts
-                const Text("Posts",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 30,
-                    )),
-                const SizedBox(height: 25),
-                // clubPosts("Club Name", "77"),
-                recentPosts(),
+                  //posts
+                  const Text("Posts",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 30,
+                      )),
+                  const SizedBox(height: 25),
+                  // clubPosts("Club Name", "77"),
+                  recentPosts(),
 
-                const SizedBox(height: 100),
-              ],
-            ))));
+                  const SizedBox(height: 100),
+                ],
+              )),
+        ));
   }
 
   Widget myClubs(BuildContext context) {
@@ -60,11 +62,11 @@ class _HomeState extends State<Home> {
         stream: getAllClubs(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Text('Something went wrong');
+            return const Text('Something went wrong');
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return LoadingCircle();
           }
 
           List<Map> clubsInfo = snapshot.data!;
@@ -102,7 +104,7 @@ class _HomeState extends State<Home> {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return LoadingCircle();
         }
 
         if (snapshot.data == null) {

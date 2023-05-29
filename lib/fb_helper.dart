@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:club_app/screens/home.dart';
+import 'package:club_app/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:intl/intl.dart';
 import '../main.dart';
@@ -140,7 +141,7 @@ Future<void> signIn(
   showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => Center(child: CircularProgressIndicator()));
+      builder: (context) => LoadingCircle());
 
   try {
     final credential = await FirebaseAuth.instance
@@ -189,6 +190,7 @@ void signOut(BuildContext context) {
       context: context,
       barrierDismissible: false,
       builder: (context) => Center(child: CircularProgressIndicator()));
+  userData.clear();
 
   FirebaseAuth.instance.signOut();
 
@@ -589,7 +591,7 @@ Stream<List<Map<String, dynamic>>> getRecentPosts() {
   if (clubIds.isEmpty) {
     return Stream.value([]); // or however you'd like to handle this case
   }
-  
+
   var clubPosts = db
       .collection("posts")
       .where("club_id", whereIn: clubIds)

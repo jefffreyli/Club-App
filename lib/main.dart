@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:html';
 import '../screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -31,13 +30,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
+      color: Colors.white,
       theme: ThemeData(
-          primaryColor: Colors.grey[50],
-          textTheme: GoogleFonts.nunitoSansTextTheme(
-            Theme.of(context).textTheme,
-          )),
-      // darkTheme: MyThemes.darkTheme,
-      // themeMode: ThemeMode.system,
+        floatingActionButtonTheme:
+            FloatingActionButtonThemeData(backgroundColor: green_2),
+        scaffoldBackgroundColor: Colors.white,
+        primaryColor: Colors.white,
+        textTheme: GoogleFonts.nunitoSansTextTheme(
+          Theme.of(context).textTheme,
+        ),
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: Colors.black,
+        ),
+        colorScheme:
+            ThemeData().colorScheme.copyWith(primary: Colors.grey[800]),
+      ),
       home: FutureBuilder<void>(
         future: _waitThreeSeconds(),
         builder: (context, snapshot) {
@@ -48,9 +55,9 @@ class MyApp extends StatelessWidget {
               stream: FirebaseAuth.instance.authStateChanges(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return LoadingCircle();
                 } else if (snapshot.hasData) {
-                  return Home();
+                  return const Home();
                 } else {
                   return SignIn();
                 }

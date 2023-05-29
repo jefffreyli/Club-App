@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import '../clubModel.dart';
+import '../models/club.dart';
 import '../components/ClubCardSquare.dart';
 import '../components/Nav.dart';
 import '../components/Search.dart';
 import '../fb_helper.dart';
+import '../utils.dart';
 
 class Explore extends StatefulWidget {
   const Explore({Key? key}) : super(key: key);
@@ -24,22 +25,19 @@ class _Explore extends State<Explore> {
     return Scaffold(
       appBar: nav("Explore"),
       drawer: sidebar(context),
-      body: Container(
-        color: Colors.grey[100],
-        child: SafeArea(
-          child: Container(
-            margin: EdgeInsets.only(left: 15, right: 15),
-            child: Column(
-              children: [
-                SizedBox(height: 10),
-                searchClub(),
-                SizedBox(height: 10),
-                allTabs(),
-                SizedBox(height: 10),
-                allClubs(context, search),
-                SizedBox(height: 25),
-              ],
-            ),
+      body: SafeArea(
+        child: Container(
+          margin: EdgeInsets.only(left: 15, right: 15),
+          child: Column(
+            children: [
+              SizedBox(height: 10),
+              searchClub(),
+              SizedBox(height: 10),
+              allTabs(),
+              SizedBox(height: 10),
+              allClubs(context, search),
+              SizedBox(height: 25),
+            ],
           ),
         ),
       ),
@@ -94,7 +92,7 @@ class _Explore extends State<Explore> {
         } else if (snapshot.hasError) {
           return Text('Error retrieving clubs: ${snapshot.error}');
         } else {
-          return CircularProgressIndicator();
+          return LoadingCircle();
         }
       },
     );

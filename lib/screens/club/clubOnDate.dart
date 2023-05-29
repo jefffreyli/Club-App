@@ -1,7 +1,8 @@
 import 'package:club_app/components/ClubCardHorizontal.dart';
+import 'package:club_app/utils.dart';
 import 'package:flutter/material.dart';
 
-import '../../clubModel.dart';
+import '../../models/club.dart';
 import '../../components/Nav.dart';
 import '../../fb_helper.dart';
 
@@ -18,18 +19,15 @@ class _ClubsOnDateState extends State<ClubsOnDate> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: nav(widget.date.toString()),
-        body: Container(
-          margin:
-              const EdgeInsets.only(top: 20, bottom: 20, right: 25, left: 25),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
+        body: SingleChildScrollView(
+          child: Container(
+            margin:
+                const EdgeInsets.only(top: 20, bottom: 20, right: 25, left: 25),
             child: FutureBuilder<List<Map<String, dynamic>>>(
               future: clubsOnDate(widget.date),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                      child:
-                          CircularProgressIndicator()); // Show a loading spinner while waiting
+                  return LoadingCircle(); // Show a loading spinner while waiting
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {

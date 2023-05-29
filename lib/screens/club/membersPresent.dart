@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../components/Nav.dart';
 import '../../components/PersonCardHorizontal.dart';
 import '../../fb_helper.dart';
-import '../../person.dart';
+import '../../models/person.dart';
 import '../../utils.dart';
 
 class MembersPresent extends StatefulWidget {
@@ -20,17 +20,15 @@ class _MembersPresentState extends State<MembersPresent> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: nav(widget.date.toString()),
-        drawer: sidebar(context),
-        body: Container(
-          margin: EdgeInsets.only(top: 20, bottom: 20, right: 25, left: 25),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
+        body: SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.only(top: 20, bottom: 20, right: 25, left: 25),
             child: FutureBuilder<List<Map<String, dynamic>>>(
               future: getPresentMembers(
                   widget.clubId, userData['osis'], widget.date),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator(); // Show a loading spinner while waiting
+                  return LoadingCircle();
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {

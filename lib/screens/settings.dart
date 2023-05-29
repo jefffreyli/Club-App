@@ -68,7 +68,7 @@ class _SettingsState extends State<Settings> {
                         ? 'email_notifications'
                         : 'mobile_notifications'] ==
                     'true',
-                activeColor: Colors.blue[400],
+                activeColor: green_2,
                 onChanged: (value) async {
                   if (title == "Email notifications") {
                     await updateSettings(emailNotifications: value.toString());
@@ -107,7 +107,7 @@ class _SettingsState extends State<Settings> {
               trailing: title == "Appearance"
                   ? Switch(
                       value: userData['appearance'] == 'true',
-                      activeColor: Colors.blue[400],
+                      activeColor: green_2,
                       onChanged: (value) async {
                         await updateSettings(appearance: value.toString());
                         setState(() {}); // Refresh UI

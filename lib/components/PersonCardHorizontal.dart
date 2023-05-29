@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../screens/profile.dart';
 import '../utils.dart';
 import '../screens/profile.dart';
-import '../person.dart';
+import '../models/person.dart';
 
 Widget personCardHorizontal(Person person, BuildContext context, bool editable,
     [String? position]) {

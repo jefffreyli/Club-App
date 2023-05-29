@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/club/clubHome.dart';
-import '../clubModel.dart';
+import '../models/club.dart';
 import '../utils.dart';
 import 'Tag.dart';
 

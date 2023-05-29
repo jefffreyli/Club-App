@@ -2,7 +2,7 @@ import '../components/Nav.dart';
 import '../screens/editProfile.dart';
 import '../utils.dart';
 import 'package:flutter/material.dart';
-import '../person.dart';
+import '../models/person.dart';
 
 class Profile extends StatefulWidget {
   final Person person;
@@ -24,7 +24,7 @@ class _Profile extends State<Profile> {
 
     return Scaffold(
         appBar: nav("Profile"),
-        // drawer: sidebar(context),
+        drawer: sidebar(context),
         floatingActionButton: Container(
             margin: EdgeInsets.only(right: 5),
             child: widget.editable ? FloatingActionButton(
@@ -36,7 +36,7 @@ class _Profile extends State<Profile> {
                 );
               },
               child: Icon(Icons.edit),
-              backgroundColor: green_1,
+              backgroundColor: green_2,
             ) : null),
         body: Container(
           margin: EdgeInsets.fromLTRB(25, 75, 25, 25),
@@ -75,7 +75,6 @@ class _Profile extends State<Profile> {
       children: [
         const Divider(),
         ListTile(
-          tileColor: Colors.grey[50],
           contentPadding: const EdgeInsets.all(5),
           leading: const Icon(Icons.school_rounded),
           title: const Text('Gradudation Year',
@@ -84,7 +83,6 @@ class _Profile extends State<Profile> {
         ),
         const Divider(),
         ListTile(
-          tileColor: Colors.grey[50],
           contentPadding: const EdgeInsets.all(5),
           leading: const Icon(Icons.person),
           title: const Text('About Me',

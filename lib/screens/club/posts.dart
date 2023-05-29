@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../clubModel.dart';
+import '../../models/club.dart';
 import '../../components/Posts.dart';
 import '../../fb_helper.dart';
 import '../../utils.dart';
@@ -25,16 +25,12 @@ class _PostsState extends State<Posts> {
     return Scaffold(
         backgroundColor: Colors.white,
         floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.green[700],
           child: const Icon(Icons.add_box_rounded),
           onPressed: () {
             navigate(context, EditPost(club: widget.club));
           },
         ),
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: clubPosts(widget.club.name, widget.club.id, context),
-        ));
+        body: clubPosts(widget.club.name, widget.club.id, context));
   }
 
   Widget clubPosts(String clubName, String clubId, BuildContext context) {
@@ -46,7 +42,7 @@ class _PostsState extends State<Posts> {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return LoadingCircle();
         }
 
         return StreamBuilder<List<Map>>(
@@ -57,7 +53,7 @@ class _PostsState extends State<Posts> {
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return LoadingCircle();
             }
 
             List<Map> postsInfo = snapshot.data!;
@@ -85,7 +81,7 @@ class _PostsState extends State<Posts> {
               }
             }
 
-            return Column(children: postWidgets);
+            return SingleChildScrollView(child: Container(margin: EdgeInsets.fromLTRB(20, 20, 20, 20), child: Column(children: postWidgets)));
           },
         );
       },

@@ -4,9 +4,9 @@ import '../../fb_helper.dart';
 import 'package:flutter/material.dart';
 import '../../components/Nav.dart';
 import '../../components/Tag.dart';
-import '../../person.dart';
+import '../../models/person.dart';
 import 'attendance.dart';
-import '../../clubModel.dart';
+import '../../models/club.dart';
 import '../../utils.dart';
 import 'posts.dart';
 
@@ -40,17 +40,17 @@ class _ClubHomeState extends State<ClubHome> {
       Posts(club: widget.club),
       Attendance(club: widget.club),
       FutureBuilder<Widget>(
-        future: people(context),
+        future: clubMembers(context),
         builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
+              // return Text('Error: ${snapshot.error}');
+              return Text("");
             } else {
-              return Column(
-                  children: [const SizedBox(height: 25), snapshot.data!]);
+              return Column(children: [snapshot.data!]);
             }
           } else {
-            return Center(child: CircularProgressIndicator());
+            return LoadingCircle();
           }
         },
       ),
@@ -78,9 +78,7 @@ class _ClubHomeState extends State<ClubHome> {
         centerTitle: true,
       ),
       // drawer: sidebar(context),
-      body: Container(
-          margin: EdgeInsets.fromLTRB(15, 15, 15, 15),
-          child: widgetOptions.elementAt(selectedIndex)),
+      body: widgetOptions.elementAt(selectedIndex),
       bottomNavigationBar: SafeArea(
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
@@ -102,56 +100,59 @@ class _ClubHomeState extends State<ClubHome> {
   }
 
   Widget clubDetails(String image, BuildContext context) {
-    return (SingleChildScrollView(
-        child: Container(
-      margin: EdgeInsets.only(left: margin, right: margin),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 60),
-          Center(
-              child: CircleAvatar(
-            radius: h * 0.12,
-            backgroundImage: AssetImage("assets/logo.png"),
-          )),
-          const SizedBox(height: 50),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              tag(widget.club.day, Colors.blue[800]!, Colors.blue[50]!),
-              const SizedBox(width: 10),
-              tag(widget.club.category, yellowOrangeDark, yellowOrange),
-              const SizedBox(width: 10),
-              tag(widget.club.location, Colors.red[800]!, Colors.red[50]!),
-            ],
-          ),
-          const SizedBox(height: 50),
-          const Text("Overview", style: TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 25),
-          Text(widget.club.description),
-          const SizedBox(height: 25),
-          const Text("Leaders", style: TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 25),
-          leadership(context),
-          // FutureBuilder<Widget>(
-          //   future: leadership(context),
-          //   builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-          //     if (snapshot.connectionState == ConnectionState.done) {
-          //       if (snapshot.hasError) {
-          //         return Text('Error: ${snapshot.error}');
-          //       } else {
-          //         return Column(children: [snapshot.data!]);
-          //       }
-          //     } else {
-          //       return Center(child: CircularProgressIndicator());
-          //     }
-          //   },
-          // ),
+    return SingleChildScrollView(
+      child: Container(
+        margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+        child: (Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 60),
+            Center(
+                child: CircleAvatar(
+              radius: h * 0.12,
+              backgroundImage: AssetImage("assets/logo.png"),
+            )),
+            const SizedBox(height: 50),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                tag(widget.club.day, Colors.blue[800]!, Colors.blue[50]!),
+                const SizedBox(width: 10),
+                tag(widget.club.category, yellowOrangeDark, yellowOrange),
+                const SizedBox(width: 10),
+                tag(widget.club.location, Colors.red[800]!, Colors.red[50]!),
+              ],
+            ),
+            const SizedBox(height: 50),
+            const Text("Overview",
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 25),
+            Text(widget.club.description),
+            const SizedBox(height: 25),
+            const Text("Leaders",
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 25),
+            leadership(context),
+            // FutureBuilder<Widget>(
+            //   future: leadership(context),
+            //   builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+            //     if (snapshot.connectionState == ConnectionState.done) {
+            //       if (snapshot.hasError) {
+            //         return Text('Error: ${snapshot.error}');
+            //       } else {
+            //         return Column(children: [snapshot.data!]);
+            //       }
+            //     } else {
+            //       return Center(child: CircularProgressIndicator());
+            //     }
+            //   },
+            // ),
 
-          const SizedBox(height: 50),
-        ],
+            const SizedBox(height: 50),
+          ],
+        )),
       ),
-    )));
+    );
   }
 
   Widget attendance(BuildContext context) {
@@ -172,7 +173,7 @@ class _ClubHomeState extends State<ClubHome> {
         ));
   }
 
-  Future<Widget> people(BuildContext context) async {
+  Future<Widget> clubMembers(BuildContext context) async {
     List<Widget> memberWidgets = [];
     List memberOsis = widget.club.members;
 
@@ -190,12 +191,12 @@ class _ClubHomeState extends State<ClubHome> {
       Widget memberWidget = personCardHorizontal(p, context, false);
       memberWidgets.add(memberWidget);
     }
-    return Container(
-      // margin: EdgeInsets.only(right: margin, left: margin),
-      child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(children: memberWidgets)),
-    );
+
+    return SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Container(
+            margin: EdgeInsets.all(20),
+            child: Column(children: memberWidgets)));
   }
 
   Widget leadership(BuildContext context) {
@@ -230,11 +231,8 @@ class _ClubHomeState extends State<ClubHome> {
           personCardHorizontal(p, context, false, positions[i]);
       leadershipWidgets.add(leadershipWidget);
     }
-    return Container(
-      // margin: EdgeInsets.only(right: 50, left: 50),
-      child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(children: leadershipWidgets)),
-    );
+    return SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(children: leadershipWidgets));
   }
 }
