@@ -1,1 +1,1 @@
-A Mobile App for After School Activities
+A mobile app for after school activities.
